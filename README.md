@@ -6,6 +6,25 @@ SIMs, servicios, cobranza y soporte.
 > ⚠️ **CONFIDENCIAL** — Este repo contiene datos reales de clientes de UBITEC (RFC,
 > teléfonos, correos). Mantener el repositorio **privado**. Uso sujeto a la LFPDPPP.
 
+> 📖 Para retomar el proyecto en otra PC (guía completa: config, credenciales,
+> qué se hizo y qué falta), ver **[HANDOFF.md](HANDOFF.md)**.
+
+## Cómo está desarrollado
+
+- **Odoo 18 Community** corriendo en **Docker** (imagen oficial `odoo:18.0`) +
+  **Postgres 17**, orquestado con `docker-compose.yml`. Puertos aislados 8090/5440
+  para no chocar con otros proyectos en la misma máquina.
+- **Módulo a la medida** `ubitec_clientes` (Python/XML) que extiende `res.partner`
+  y agrega 4 modelos propios: `ubitec.unidad` (equipos GPS), `ubitec.sim`,
+  `ubitec.servicio` y `ubitec.pago`. Incluye un widget JS (OWL) `password_toggle`
+  para mostrar/ocultar la contraseña de plataforma, un cron para el estado
+  "Nuevo → Activo" a los 30 días, y un menú propio "Equipos GPS".
+- **Módulos OCA** (comunidad, gratis) para las piezas que en Community no existen
+  (son Enterprise): `contract` (suscripciones), `fieldservice`, `helpdesk_mgmt`,
+  y `web_responsive` (menú de apps con iconos). Se re-clonan con `scripts/clonar_oca.sh`.
+- **Data real** importada desde los Excels de UBITEC (`data_origen/`) mediante
+  scripts Python con `openpyxl` + `odoo.registry`. Nada de datos inventados.
+
 ## Estructura
 
 - `addons/ubitec_clientes/` — Módulo a la medida (clientes, equipos GPS, SIMs, pagos, servicios).
