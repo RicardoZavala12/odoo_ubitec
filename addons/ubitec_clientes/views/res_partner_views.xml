@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Pestaña "Ubitec" en la ficha del cliente -->
+    <record id="view_partner_form_ubitec" model="ir.ui.view">
+        <field name="name">res.partner.form.ubitec</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Ubitec" name="ubitec">
+                    <group>
+                        <group string="Generales">
+                            <field name="ubitec_es_cliente"/>
+                            <field name="ubitec_estado" widget="badge"
+                                   decoration-info="ubitec_estado == 'nuevo'"
+                                   decoration-success="ubitec_estado == 'activo'"
+                                   decoration-danger="ubitec_estado == 'inactivo'"/>
+                            <field name="ubitec_fecha_alta"/>
+                            <field name="ubitec_vendedor"/>
+                            <field name="ubitec_esquema"/>
+                            <field name="ubitec_unidades"/>
+                        </group>
+                        <group string="Plan / Cobro">
+                            <field name="ubitec_mensualidad"/>
+                            <field name="ubitec_financiamiento"/>
+                            <field name="ubitec_semestre"/>
+                            <field name="ubitec_anualidad"/>
+                            <field name="ubitec_bonificacion"/>
+                        </group>
+                    </group>
+
+                    <group string="Registro de pago de mensualidad">
+                        <group>
+                            <field name="ubitec_dia_corte"/>
+                            <field name="ubitec_ultimo_pago"/>
+                            <field name="ubitec_proximo_pago"/>
+                            <field name="ubitec_estado_pago" widget="badge"
+                                   decoration-success="ubitec_estado_pago == 'al_corriente'"
+                                   decoration-warning="ubitec_estado_pago == 'por_vencer'"
+                                   decoration-danger="ubitec_estado_pago == 'vencido'"/>
+                            <field name="ubitec_adeudo"/>
+                            <field name="ubitec_atraso_desde"/>
+                            <field name="ubitec_cobranza_nota"/>
+                        </group>
+                    </group>
+                    <field name="ubitec_pago_ids">
+                        <list editable="bottom">
+                            <field name="fecha"/>
+                            <field name="monto"/>
+                            <field name="forma_pago"/>
+                            <field name="referencia"/>
+                            <field name="notas"/>
+                        </list>
+                    </field>
+
+                    <group>
+                        <group string="Costos (una sola vez)">
+                            <field name="ubitec_costo_equipo"/>
+                            <field name="ubitec_costo_instalacion"/>
+                            <field name="ubitec_costo_migracion"/>
+                            <field name="ubitec_costo_reinstalacion"/>
+                            <field name="ubitec_costo_desinstalacion"/>
+                            <field name="ubitec_costo_configuracion"/>
+                        </group>
+                        <group string="Servicios adicionales">
+                            <field name="ubitec_serv_microfono"/>
+                            <field name="ubitec_serv_roaming"/>
+                            <field name="ubitec_serv_sensor_temp"/>
+                            <field name="ubitec_serv_sensor_diesel"/>
+                            <field name="ubitec_serv_sensor_puerta"/>
+                            <field name="ubitec_serv_dashcam"/>
+                            <field name="ubitec_serv_camara_int"/>
+                            <field name="ubitec_serv_webservice"/>
+                        </group>
+                    </group>
+
+                    <group string="Acceso a la plataforma de rastreo">
+                        <field name="ubitec_plataforma_usuario"/>
+                        <field name="ubitec_plataforma_password"
+                               widget="password_toggle"/>
+                    </group>
+                </page>
+
+                <!-- Pestaña Unidades / Equipos -->
+                <page string="Unidades / Equipos" name="ubitec_unidades">
+                    <field name="ubitec_unidad_ids">
+                        <list editable="bottom">
+                            <field name="unidad"/>
+                            <field name="imei"/>
+                            <field name="marca"/>
+                            <field name="esquema"/>
+                            <field name="fecha_instalacion"/>
+                            <field name="estado" widget="badge"
+                                   decoration-success="estado == 'instalado'"
+                                   decoration-muted="estado == 'stock'"
+                                   decoration-danger="estado == 'baja'"/>
+                            <field name="costo"/>
+                            <field name="forma_pago"/>
+                        </list>
+                    </field>
+                </page>
+
+                <!-- Pestaña Historial de servicios -->
+                <page string="Historial de servicios" name="ubitec_servicios">
+                    <field name="ubitec_servicio_ids">
+                        <list editable="bottom">
+                            <field name="fecha"/>
+                            <field name="tipo"/>
+                            <field name="unidad_texto"/>
+                            <field name="tecnico"/>
+                            <field name="reporte"/>
+                            <field name="notas"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+
+    <!-- Filtros utiles en la lista de contactos -->
+    <record id="view_partner_filter_ubitec" model="ir.ui.view">
+        <field name="name">res.partner.filter.ubitec</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <filter name="type_company" position="after">
+                <separator/>
+                <filter string="Clientes Ubitec" name="ubitec_clientes"
+                        domain="[('ubitec_es_cliente','=',True)]"/>
+                <filter string="Nuevos" name="ubitec_nuevos"
+                        domain="[('ubitec_estado','=','nuevo')]"/>
+                <filter string="Activos" name="ubitec_activos"
+                        domain="[('ubitec_estado','=','activo')]"/>
+                <filter string="Inactivos" name="ubitec_inactivos"
+                        domain="[('ubitec_estado','=','inactivo')]"/>
+                <separator/>
+                <filter string="Pago vencido" name="ubitec_vencido"
+                        domain="[('ubitec_estado_pago','=','vencido')]"/>
+                <filter string="Comodato" name="ubitec_comodato"
+                        domain="[('ubitec_esquema','=','comodato')]"/>
+                <filter string="Venta" name="ubitec_venta"
+                        domain="[('ubitec_esquema','=','venta')]"/>
+            </filter>
+        </field>
+    </record>
+
+</odoo>

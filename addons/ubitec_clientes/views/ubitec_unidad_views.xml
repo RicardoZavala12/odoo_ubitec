@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Vista LISTA de equipos GPS -->
+    <record id="view_ubitec_unidad_list" model="ir.ui.view">
+        <field name="name">ubitec.unidad.list</field>
+        <field name="model">ubitec.unidad</field>
+        <field name="arch" type="xml">
+            <list string="Equipos GPS" editable="bottom">
+                <field name="folio"/>
+                <field name="imei"/>
+                <field name="numero_serie"/>
+                <field name="marca"/>
+                <field name="unidad"/>
+                <field name="partner_id"/>
+                <field name="sim"/>
+                <field name="esquema"/>
+                <field name="estado" widget="badge"
+                       decoration-success="estado == 'instalado'"
+                       decoration-muted="estado == 'stock'"
+                       decoration-danger="estado == 'baja'"/>
+                <field name="fecha_instalacion"/>
+                <field name="costo" sum="Total"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista FORMULARIO (alta/edición de equipo) -->
+    <record id="view_ubitec_unidad_form" model="ir.ui.view">
+        <field name="name">ubitec.unidad.form</field>
+        <field name="model">ubitec.unidad</field>
+        <field name="arch" type="xml">
+            <form string="Equipo GPS">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="imei"/>
+                        <h1><field name="imei" placeholder="IMEI del equipo"/></h1>
+                    </div>
+                    <group>
+                        <group string="Identificación">
+                            <field name="folio"/>
+                            <field name="numero_serie"/>
+                            <field name="marca"/>
+                            <field name="estado"/>
+                        </group>
+                        <group string="Asignación">
+                            <field name="partner_id"/>
+                            <field name="unidad"/>
+                            <field name="plataforma"/>
+                            <field name="esquema"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Línea / SIM">
+                            <field name="sim"/>
+                            <field name="icc"/>
+                            <field name="fecha_activacion"/>
+                        </group>
+                        <group string="Fechas y costo">
+                            <field name="fecha_llegada"/>
+                            <field name="fecha_instalacion"/>
+                            <field name="costo"/>
+                            <field name="forma_pago"/>
+                        </group>
+                    </group>
+                    <group string="Notas">
+                        <field name="notas" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista BÚSQUEDA + filtros + agrupar -->
+    <record id="view_ubitec_unidad_search" model="ir.ui.view">
+        <field name="name">ubitec.unidad.search</field>
+        <field name="model">ubitec.unidad</field>
+        <field name="arch" type="xml">
+            <search string="Buscar equipos">
+                <field name="imei"/>
+                <field name="folio"/>
+                <field name="numero_serie"/>
+                <field name="marca"/>
+                <field name="unidad"/>
+                <field name="partner_id"/>
+                <field name="sim"/>
+                <separator/>
+                <filter string="Instalados" name="f_instalado" domain="[('estado','=','instalado')]"/>
+                <filter string="En stock" name="f_stock" domain="[('estado','=','stock')]"/>
+                <filter string="Dados de baja" name="f_baja" domain="[('estado','=','baja')]"/>
+                <separator/>
+                <filter string="Con cliente" name="f_concliente" domain="[('partner_id','!=',False)]"/>
+                <filter string="Sin asignar" name="f_sincliente" domain="[('partner_id','=',False)]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter string="Estado" name="g_estado" context="{'group_by':'estado'}"/>
+                    <filter string="Marca" name="g_marca" context="{'group_by':'marca'}"/>
+                    <filter string="Cliente" name="g_cliente" context="{'group_by':'partner_id'}"/>
+                    <filter string="Esquema" name="g_esquema" context="{'group_by':'esquema'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Acción -->
+    <record id="action_ubitec_unidad" model="ir.actions.act_window">
+        <field name="name">Equipos GPS</field>
+        <field name="res_model">ubitec.unidad</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ubitec_unidad_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Da de alta tu primer equipo GPS</p>
+            <p>Registra equipos por IMEI, folio y número de serie; asígnalos a un cliente y unidad.</p>
+        </field>
+    </record>
+
+    <!-- Menú propio: "Equipos GPS" -->
+    <menuitem id="menu_ubitec_root" name="Equipos GPS" sequence="50"/>
+    <menuitem id="menu_ubitec_unidad" name="Equipos GPS"
+              parent="menu_ubitec_root" action="action_ubitec_unidad" sequence="10"/>
+
+</odoo>

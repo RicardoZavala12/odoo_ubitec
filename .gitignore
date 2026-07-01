@@ -1,0 +1,10 @@
+# Repos OCA de terceros — NO se versionan aquí, se re-clonan con scripts/clonar_oca.sh
+addons/oca_web/
+addons/oca_contract/
+addons/oca_field_service/
+addons/oca_helpdesk/
+
+# Temporales
+*.pyc
+__pycache__/
+*.log

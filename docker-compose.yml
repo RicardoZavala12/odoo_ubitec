@@ -1,0 +1,51 @@
+# ===== Odoo 18 - UBITEC =====
+# Proyecto AISLADO: nombres, puertos y volumenes propios para NO chocar
+# con salogaash-local, taveron, wallet, ni ningun otro contenedor.
+#
+# Levantar:   docker compose up -d
+# Apagar:     docker compose down
+# Logs:       docker compose logs -f odoo
+# Web:        http://localhost:8090
+
+name: ubitec-local
+
+services:
+  db:
+    image: postgres:17
+    container_name: ubitec-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo_ubitec_pass
+      POSTGRES_DB: postgres          # BD de sistema; la 'ubitec' la crea Odoo
+    ports:
+      - "5440:5432"                  # 5440 host -> libre (5433/5435 ya ocupados)
+    volumes:
+      - ubitec_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:18.0                 # imagen OFICIAL community de Docker Hub
+    container_name: ubitec-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8090:8069"                  # 8090 host -> libre (8069 es de salo gaash)
+    volumes:
+      - ubitec_odoo_data:/var/lib/odoo
+      - ./config:/etc/odoo           # monta nuestro odoo.conf
+      - ./addons:/mnt/extra-addons   # modulos a la medida de ubitec
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo_ubitec_pass
+
+volumes:
+  ubitec_db_data:
+  ubitec_odoo_data:

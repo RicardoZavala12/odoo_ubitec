@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ubitec_unidad_user,ubitec.unidad.user,model_ubitec_unidad,base.group_user,1,1,1,1
+access_ubitec_servicio_user,ubitec.servicio.user,model_ubitec_servicio,base.group_user,1,1,1,1
+access_ubitec_pago_user,ubitec.pago.user,model_ubitec_pago,base.group_user,1,1,1,1
+access_ubitec_sim_user,ubitec.sim.user,model_ubitec_sim,base.group_user,1,1,1,1
