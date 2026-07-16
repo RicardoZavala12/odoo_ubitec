@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================== FORM ===================== -->
+    <record id="view_gps_service_form" model="ir.ui.view">
+        <field name="name">gps.service.form</field>
+        <field name="model">gps.service</field>
+        <field name="arch" type="xml">
+            <form string="Servicio de GPS">
+                <header>
+                    <!-- Botones del flujo: cada uno aparece solo en su estado -->
+                    <button name="action_assign" type="object" string="Asignar técnico"
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_accept" type="object" string="Aceptar servicio"
+                            class="btn-primary" invisible="state != 'assigned'"/>
+                    <button name="action_start" type="object" string="Iniciar servicio"
+                            class="btn-primary" invisible="state != 'accepted'"/>
+                    <button name="action_finish" type="object" string="Finalizar servicio"
+                            class="btn-primary" invisible="state != 'in_progress'"/>
+                    <button name="action_validate" type="object" string="Validar"
+                            class="btn-primary" invisible="state != 'to_validate'"
+                            groups="gps_service.group_gps_scheduler"/>
+                    <button name="action_post_service" type="object" string="Post-servicio"
+                            invisible="state not in ('to_validate', 'done')"
+                            groups="gps_service.group_gps_scheduler"/>
+                    <button name="action_reopen_assign" type="object" string="Reasignar"
+                            class="btn-primary" invisible="state != 'post_service'"
+                            groups="gps_service.group_gps_scheduler"/>
+                    <button name="action_reset_draft" type="object" string="Regresar a borrador"
+                            invisible="state in ('draft',)"
+                            groups="gps_service.group_gps_manager"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,assigned,accepted,in_progress,to_validate,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Servicio">
+                            <field name="partner_id"/>
+                            <field name="unidad_id"/>
+                            <field name="plates"/>
+                            <field name="location"/>
+                            <field name="scheduled_date"/>
+                        </group>
+                        <group string="Datos del equipo">
+                            <field name="imei"/>
+                            <field name="serial_number"/>
+                            <field name="unit_brand"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Asignación">
+                            <field name="technician_id"/>
+                        </group>
+                        <group string="Tiempos" invisible="state in ('draft', 'assigned', 'accepted')">
+                            <field name="start_time"/>
+                            <field name="end_time"/>
+                            <field name="duration" widget="float_time"/>
+                        </group>
+                    </group>
+                    <group string="Validación" invisible="state != 'done'">
+                        <field name="validated_by"/>
+                        <field name="validation_date"/>
+                    </group>
+                    <notebook>
+                        <page string="Indicaciones">
+                            <field name="notes" placeholder="Instrucciones para el técnico..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ===================== LIST ===================== -->
+    <record id="view_gps_service_list" model="ir.ui.view">
+        <field name="name">gps.service.list</field>
+        <field name="model">gps.service</field>
+        <field name="arch" type="xml">
+            <list string="Servicios de GPS">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="unidad_id"/>
+                <field name="plates"/>
+                <field name="technician_id"/>
+                <field name="scheduled_date"/>
+                <field name="duration" widget="float_time" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'assigned'"
+                       decoration-warning="state in ('accepted', 'in_progress', 'to_validate')"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'post_service'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ===================== SEARCH ===================== -->
+    <record id="view_gps_service_search" model="ir.ui.view">
+        <field name="name">gps.service.search</field>
+        <field name="model">gps.service</field>
+        <field name="arch" type="xml">
+            <search string="Buscar servicios">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="plates"/>
+                <field name="technician_id"/>
+                <filter name="my_services" string="Mis servicios"
+                        domain="[('technician_id', '=', uid)]"/>
+                <filter name="to_validate" string="Por validar"
+                        domain="[('state', '=', 'to_validate')]"/>
+                <separator/>
+                <filter name="open" string="Abiertos"
+                        domain="[('state', 'not in', ('done',))]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state" string="Estado"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_technician" string="Técnico"
+                            context="{'group_by': 'technician_id'}"/>
+                    <filter name="group_partner" string="Cliente"
+                            context="{'group_by': 'partner_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ===================== ACTION ===================== -->
+    <record id="action_gps_service" model="ir.actions.act_window">
+        <field name="name">Servicios de GPS</field>
+        <field name="res_model">gps.service</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_gps_service_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Agenda tu primer servicio de GPS
+            </p>
+            <p>
+                Captura el cliente, la unidad, las placas y la ubicación,
+                y asigna un técnico para que lo atienda.
+            </p>
+        </field>
+    </record>
+
+</odoo>

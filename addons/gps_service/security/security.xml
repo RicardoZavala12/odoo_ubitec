@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Categoría del módulo en Ajustes > Usuarios -->
+    <record id="module_category_gps_service" model="ir.module.category">
+        <field name="name">Servicios GPS</field>
+        <field name="sequence">20</field>
+    </record>
+
+    <!-- ================= GRUPOS ================= -->
+
+    <!-- Técnico: solo ve y atiende SUS servicios asignados -->
+    <record id="group_gps_technician" model="res.groups">
+        <field name="name">Técnico</field>
+        <field name="category_id" ref="module_category_gps_service"/>
+    </record>
+
+    <!-- Agenda/Validador: crea, asigna y valida (ve todos) -->
+    <record id="group_gps_scheduler" model="res.groups">
+        <field name="name">Agenda / Validación</field>
+        <field name="category_id" ref="module_category_gps_service"/>
+        <field name="implied_ids" eval="[(4, ref('group_gps_technician'))]"/>
+    </record>
+
+    <!-- Manager: todo + configuración -->
+    <record id="group_gps_manager" model="res.groups">
+        <field name="name">Administrador</field>
+        <field name="category_id" ref="module_category_gps_service"/>
+        <field name="implied_ids" eval="[(4, ref('group_gps_scheduler'))]"/>
+        <field name="users" eval="[(4, ref('base.user_admin'))]"/>
+    </record>
+
+    <!-- ================= REGLAS DE REGISTRO ================= -->
+
+    <!-- El técnico SOLO ve los servicios donde es el técnico asignado -->
+    <record id="rule_gps_technician_own" model="ir.rule">
+        <field name="name">Técnico: solo sus servicios</field>
+        <field name="model_id" ref="model_gps_service"/>
+        <field name="domain_force">[('technician_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('group_gps_technician'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Agenda/Validación y Manager ven TODOS los servicios -->
+    <record id="rule_gps_scheduler_all" model="ir.rule">
+        <field name="name">Agenda/Validación: todos los servicios</field>
+        <field name="model_id" ref="model_gps_service"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_gps_scheduler'))]"/>
+    </record>
+
+</odoo>

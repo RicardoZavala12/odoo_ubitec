@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_gps_root"
+              name="Servicios GPS"
+              sequence="50"
+              web_icon="gps_service,static/description/icon.png"
+              groups="gps_service.group_gps_technician"/>
+
+    <menuitem id="menu_gps_service"
+              name="Servicios"
+              parent="menu_gps_root"
+              action="action_gps_service"
+              sequence="10"/>
+
+</odoo>
