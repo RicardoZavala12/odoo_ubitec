@@ -2,3 +2,6 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gps_service_technician,gps.service.technician,model_gps_service,group_gps_technician,1,1,0,0
 access_gps_service_scheduler,gps.service.scheduler,model_gps_service,group_gps_scheduler,1,1,1,0
 access_gps_service_manager,gps.service.manager,model_gps_service,group_gps_manager,1,1,1,1
+access_gps_photo_technician,gps.service.photo.technician,model_gps_service_photo,group_gps_technician,1,1,1,1
+access_gps_photo_scheduler,gps.service.photo.scheduler,model_gps_service_photo,group_gps_scheduler,1,1,1,1
+access_gps_photo_manager,gps.service.photo.manager,model_gps_service_photo,group_gps_manager,1,1,1,1

@@ -65,6 +65,48 @@
                         <field name="validation_date"/>
                     </group>
                     <notebook>
+                        <page string="Evidencias fotográficas">
+                            <div class="alert alert-info" role="status"
+                                 invisible="photos_complete or state == 'draft'">
+                                Faltan fotos obligatorias. Agrega las 6 evidencias
+                                (Unidad, Placa, Número de serie, Tablero cerrado,
+                                Evidencia de instalación y Tablero armado) para poder
+                                finalizar el servicio.
+                            </div>
+                            <div class="alert alert-success" role="status"
+                                 invisible="not photos_complete">
+                                ✓ Las 6 fotos de evidencia están completas.
+                            </div>
+                            <field name="photos_complete" invisible="1"/>
+                            <field name="photo_ids" mode="kanban">
+                                <kanban>
+                                    <field name="photo_type"/>
+                                    <field name="stage"/>
+                                    <field name="image"/>
+                                    <templates>
+                                        <t t-name="kanban-box">
+                                            <div class="oe_kanban_global_click o_kanban_record_has_image_fill">
+                                                <div class="o_kanban_image_fill_left"
+                                                     t-attf-style="background-image:url('#{kanban_image('gps.service.photo', 'image', record.id.raw_value)}')"/>
+                                                <div class="oe_kanban_details">
+                                                    <strong><field name="photo_type"/></strong>
+                                                    <div class="text-muted"><field name="stage"/></div>
+                                                    <field name="note"/>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </templates>
+                                </kanban>
+                                <form>
+                                    <group>
+                                        <field name="stage"/>
+                                        <field name="photo_type"/>
+                                        <field name="image" widget="image"/>
+                                        <field name="note"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
                         <page string="Indicaciones">
                             <field name="notes" placeholder="Instrucciones para el técnico..."/>
                         </page>

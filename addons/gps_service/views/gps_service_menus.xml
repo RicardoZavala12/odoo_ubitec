@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Menú raíz = la "app" en la grilla de Aplicaciones.
+         Lleva la acción directamente para que Odoo 18 la dibuje y, al hacer
+         clic en el ícono, abra la lista de servicios. -->
     <menuitem id="menu_gps_root"
               name="Servicios GPS"
               sequence="50"
+              action="action_gps_service"
               web_icon="gps_service,static/description/icon.png"
               groups="gps_service.group_gps_technician"/>
 
+    <!-- Submenú visible dentro de la app (misma acción, para la barra superior) -->
     <menuitem id="menu_gps_service"
               name="Servicios"
               parent="menu_gps_root"
               action="action_gps_service"
-              sequence="10"/>
+              sequence="10"
+              groups="gps_service.group_gps_technician"/>
 
 </odoo>

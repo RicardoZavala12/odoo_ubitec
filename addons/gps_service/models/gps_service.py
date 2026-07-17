@@ -119,6 +119,23 @@ class GpsService(models.Model):
     )
     validation_date = fields.Datetime(string="Fecha de validación", readonly=True, copy=False)
 
+    # ------------------------------------------------------------------
+    # Evidencias fotográficas (Fase 2)
+    # ------------------------------------------------------------------
+    photo_ids = fields.One2many(
+        "gps.service.photo", "service_id", string="Evidencias fotográficas", copy=False
+    )
+    photos_complete = fields.Boolean(
+        string="Fotos completas",
+        compute="_compute_photos_complete",
+        help="Verdadero cuando están las 6 fotos obligatorias.",
+    )
+
+    # Los 6 tipos de foto obligatorios para poder finalizar
+    _REQUIRED_PHOTOS = [
+        "unit", "plate", "serial", "dash_closed", "install", "dash_assembled",
+    ]
+
     # ==================================================================
     # Cálculos
     # ==================================================================
@@ -130,6 +147,23 @@ class GpsService(models.Model):
                 service.duration = delta.total_seconds() / 3600.0
             else:
                 service.duration = 0.0
+
+    @api.depends("photo_ids", "photo_ids.photo_type")
+    def _compute_photos_complete(self):
+        for service in self:
+            tipos = set(service.photo_ids.mapped("photo_type"))
+            service.photos_complete = all(
+                t in tipos for t in service._REQUIRED_PHOTOS
+            )
+
+    def _missing_photos(self):
+        """Devuelve las etiquetas de las fotos que faltan (para el mensaje)."""
+        self.ensure_one()
+        labels = dict(
+            self.env["gps.service.photo"]._fields["photo_type"].selection
+        )
+        tipos = set(self.photo_ids.mapped("photo_type"))
+        return [labels[t] for t in self._REQUIRED_PHOTOS if t not in tipos]
 
     # ==================================================================
     # Folio (secuencia)
@@ -175,12 +209,18 @@ class GpsService(models.Model):
     def action_finish(self):
         """El técnico termina: marca la hora de fin y pasa a validación.
 
-        En fase 2 aquí se validará que estén todas las fotos requeridas.
+        Bloquea si faltan las 6 fotos de evidencia obligatorias.
         """
         for service in self:
             service._check_is_technician()
             if service.state != "in_progress":
                 raise UserError(_("Inicia el servicio antes de finalizarlo."))
+            faltantes = service._missing_photos()
+            if faltantes:
+                raise UserError(
+                    _("No puedes finalizar: faltan estas fotos de evidencia:\n- %s")
+                    % "\n- ".join(faltantes)
+                )
             service.write({
                 "state": "to_validate",
                 "end_time": fields.Datetime.now(),
@@ -215,9 +255,19 @@ class GpsService(models.Model):
             service.state = "assigned"
 
     def action_reset_draft(self):
-        """Regresar a borrador (solo agenda/manager)."""
+        """Regresar a borrador (solo agenda/manager).
+
+        Limpia los datos del flujo anterior (tiempos y validación) para que
+        el servicio quede realmente como nuevo, sin datos fantasma.
+        """
         for service in self:
-            service.state = "draft"
+            service.write({
+                "state": "draft",
+                "start_time": False,
+                "end_time": False,
+                "validated_by": False,
+                "validation_date": False,
+            })
 
     # ==================================================================
     # Helpers
