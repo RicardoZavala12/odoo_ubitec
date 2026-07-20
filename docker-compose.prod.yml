@@ -1,8 +1,8 @@
 # ===== Odoo 18 UBITEC — PRODUCCIÓN =====
-# Stack de PROD. Puertos 8090 (web) / 5440 (db). Contenedores ubitec-prod-*.
-# NUNCA levantar al mismo tiempo que dev (comparten RAM con Traccar).
-# Traccar NO se toca: usa sus propios contenedores y puertos.
-name: ubitec-prod
+# Compatible con docker-compose v1.29 (Contabo). El nombre del proyecto se
+# pasa con -p ubitec-prod (ver scripts). Puertos 8090 web / 5440 db.
+# NUNCA levantar junto con dev. Traccar NO se toca.
+version: "3.3"
 
 services:
   db:
