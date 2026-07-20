@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-from odoo import fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class GpsServicePhoto(models.Model):
@@ -54,3 +55,47 @@ class GpsServicePhoto(models.Model):
         required=True,
     )
     note = fields.Char(string="Nota")
+
+    # ------------------------------------------------------------------
+    # Etapa guiada por el estado del servicio
+    # ------------------------------------------------------------------
+    # Etapas permitidas según el estado del servicio padre. Al finalizar el
+    # técnico puede subir tanto "install" como "after" en el estado in_progress.
+    _STAGES_ALLOWED_BY_STATE = {
+        "accepted": ["before"],
+        "in_progress": ["install", "after"],
+    }
+
+    @api.model
+    def default_get(self, fields_list):
+        """Prellenar la ETAPA según el estado del servicio al abrir el form.
+
+        - Servicio Aceptado → etapa 'Antes de instalar'.
+        - Servicio En sitio → etapa 'Instalación' (el técnico puede cambiar
+          a 'Al terminar', ambas válidas en ese estado).
+        """
+        res = super().default_get(fields_list)
+        service_id = self.env.context.get("default_service_id")
+        if service_id:
+            service = self.env["gps.service"].browse(service_id)
+            if service.state == "accepted":
+                res["stage"] = "before"
+            elif service.state == "in_progress":
+                res["stage"] = "install"
+        return res
+
+    @api.constrains("stage", "service_id")
+    def _check_stage_matches_state(self):
+        """Impedir subir una foto de una etapa que no corresponde al estado."""
+        for photo in self:
+            service = photo.service_id
+            allowed = self._STAGES_ALLOWED_BY_STATE.get(service.state)
+            # Si el servicio ya está más avanzado (to_validate/done) no
+            # restringimos (permite corregir), solo bloqueamos en el flujo activo.
+            if allowed is not None and photo.stage not in allowed:
+                labels = dict(self._fields["stage"].selection)
+                permitidas = ", ".join(labels[s] for s in allowed)
+                raise UserError(_(
+                    "En este momento solo puedes subir fotos de la etapa: %s.\n"
+                    "La etapa '%s' no corresponde al estado actual del servicio."
+                ) % (permitidas, labels.get(photo.stage, photo.stage)))

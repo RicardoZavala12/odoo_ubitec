@@ -131,10 +131,40 @@ class GpsService(models.Model):
         help="Verdadero cuando están las 6 fotos obligatorias.",
     )
 
-    # Los 6 tipos de foto obligatorios para poder finalizar
+    # Fotos obligatorias agrupadas por ETAPA del flujo:
+    #   before  (Antes de instalar) → se validan al INICIAR el servicio
+    #   install (Instalación) + after (Al terminar) → se validan al FINALIZAR
+    _PHOTOS_BY_STAGE = {
+        "before": ["unit", "plate", "serial", "dash_closed"],
+        "install": ["install"],
+        "after": ["dash_assembled"],
+    }
+    # Todos los tipos obligatorios (para el compute global de "completas")
     _REQUIRED_PHOTOS = [
         "unit", "plate", "serial", "dash_closed", "install", "dash_assembled",
     ]
+
+    # Etapa de fotos que corresponde según el estado actual del servicio.
+    # La usa el form de la foto para prellenar la etapa correcta.
+    current_stage = fields.Selection(
+        selection=[
+            ("before", "Antes de instalar"),
+            ("install", "Instalación"),
+            ("after", "Al terminar"),
+        ],
+        string="Etapa actual de fotos",
+        compute="_compute_current_stage",
+    )
+
+    @api.depends("state")
+    def _compute_current_stage(self):
+        for service in self:
+            if service.state == "accepted":
+                service.current_stage = "before"
+            elif service.state == "in_progress":
+                service.current_stage = "install"
+            else:
+                service.current_stage = False
 
     # ==================================================================
     # Cálculos
@@ -157,13 +187,28 @@ class GpsService(models.Model):
             )
 
     def _missing_photos(self):
-        """Devuelve las etiquetas de las fotos que faltan (para el mensaje)."""
+        """Devuelve las etiquetas de TODAS las fotos obligatorias que faltan."""
         self.ensure_one()
         labels = dict(
             self.env["gps.service.photo"]._fields["photo_type"].selection
         )
         tipos = set(self.photo_ids.mapped("photo_type"))
         return [labels[t] for t in self._REQUIRED_PHOTOS if t not in tipos]
+
+    def _missing_photos_for_stages(self, stages):
+        """Etiquetas de las fotos que faltan SOLO para las etapas indicadas.
+
+        Ej: _missing_photos_for_stages(['before']) → fotos de "antes" que faltan.
+        """
+        self.ensure_one()
+        labels = dict(
+            self.env["gps.service.photo"]._fields["photo_type"].selection
+        )
+        tipos = set(self.photo_ids.mapped("photo_type"))
+        requeridas = []
+        for stage in stages:
+            requeridas += self._PHOTOS_BY_STAGE.get(stage, [])
+        return [labels[t] for t in requeridas if t not in tipos]
 
     # ==================================================================
     # Folio (secuencia)
@@ -196,11 +241,20 @@ class GpsService(models.Model):
             service.state = "accepted"
 
     def action_start(self):
-        """El técnico llegó a sitio e inicia el servicio (marca la hora)."""
+        """El técnico llegó a sitio e inicia el servicio (marca la hora).
+
+        Bloquea si faltan las fotos de la etapa "Antes de instalar".
+        """
         for service in self:
             service._check_is_technician()
             if service.state != "accepted":
                 raise UserError(_("Acepta el servicio antes de iniciarlo."))
+            faltantes = service._missing_photos_for_stages(["before"])
+            if faltantes:
+                raise UserError(
+                    _("No puedes iniciar el servicio: primero sube las fotos "
+                      "de 'Antes de instalar':\n- %s") % "\n- ".join(faltantes)
+                )
             service.write({
                 "state": "in_progress",
                 "start_time": fields.Datetime.now(),
@@ -209,16 +263,17 @@ class GpsService(models.Model):
     def action_finish(self):
         """El técnico termina: marca la hora de fin y pasa a validación.
 
-        Bloquea si faltan las 6 fotos de evidencia obligatorias.
+        Bloquea si faltan las fotos de 'Instalación' o 'Al terminar'.
         """
         for service in self:
             service._check_is_technician()
             if service.state != "in_progress":
                 raise UserError(_("Inicia el servicio antes de finalizarlo."))
-            faltantes = service._missing_photos()
+            faltantes = service._missing_photos_for_stages(["install", "after"])
             if faltantes:
                 raise UserError(
-                    _("No puedes finalizar: faltan estas fotos de evidencia:\n- %s")
+                    _("No puedes finalizar: primero sube las fotos de "
+                      "'Instalación' y 'Al terminar':\n- %s")
                     % "\n- ".join(faltantes)
                 )
             service.write({

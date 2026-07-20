@@ -66,19 +66,27 @@
                     </group>
                     <notebook>
                         <page string="Evidencias fotográficas">
+                            <!-- Aviso guiado por etapa según el estado -->
                             <div class="alert alert-info" role="status"
-                                 invisible="photos_complete or state == 'draft'">
-                                Faltan fotos obligatorias. Agrega las 6 evidencias
-                                (Unidad, Placa, Número de serie, Tablero cerrado,
-                                Evidencia de instalación y Tablero armado) para poder
-                                finalizar el servicio.
+                                 invisible="state != 'accepted'">
+                                <strong>Etapa: Antes de instalar.</strong>
+                                Sube estas 4 fotos para poder <b>iniciar</b> el servicio:
+                                Unidad, Placa, Número de serie y Tablero cerrado.
+                            </div>
+                            <div class="alert alert-info" role="status"
+                                 invisible="state != 'in_progress'">
+                                <strong>Etapa: Instalación y Al terminar.</strong>
+                                Sube la Evidencia de instalación y la foto del Tablero
+                                armado para poder <b>finalizar</b> el servicio.
                             </div>
                             <div class="alert alert-success" role="status"
                                  invisible="not photos_complete">
                                 ✓ Las 6 fotos de evidencia están completas.
                             </div>
                             <field name="photos_complete" invisible="1"/>
-                            <field name="photo_ids" mode="kanban">
+                            <field name="current_stage" invisible="1"/>
+                            <field name="photo_ids" mode="kanban"
+                                   context="{'default_service_id': id}">
                                 <kanban>
                                     <field name="photo_type"/>
                                     <field name="stage"/>
