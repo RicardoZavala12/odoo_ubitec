@@ -1,0 +1,46 @@
+# ===== Odoo 18 UBITEC — DESARROLLO =====
+# Stack de DEV. Puertos 8091 (web) / 5441 (db). Contenedores ubitec-dev-*.
+# NUNCA levantar al mismo tiempo que prod (comparten RAM con Traccar).
+# Traccar NO se toca: usa sus propios contenedores y puertos.
+name: ubitec-dev
+
+services:
+  db:
+    image: postgres:17
+    container_name: ubitec-dev-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: odoo_ubitec_pass
+      POSTGRES_DB: postgres
+    ports:
+      - "5441:5432"
+    volumes:
+      - ubitec_dev_db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  odoo:
+    image: odoo:18.0
+    container_name: ubitec-dev-odoo
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8091:8069"
+    volumes:
+      - ubitec_dev_odoo:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: odoo_ubitec_pass
+
+volumes:
+  ubitec_dev_db:
+  ubitec_dev_odoo:
