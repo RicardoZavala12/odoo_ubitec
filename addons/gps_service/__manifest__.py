@@ -24,6 +24,7 @@ Las evidencias fotográficas y las vistas por rol llegan en fases posteriores.
         "security/security.xml",
         "security/ir.model.access.csv",
         "data/sequence_data.xml",
+        "data/telegram_config.xml",
         "views/gps_service_views.xml",
         "views/gps_service_menus.xml",
     ],

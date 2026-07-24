@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Config del bot de Telegram para notificar servicios nuevos.
+         noupdate="1" para que se pueda cambiar desde Ajustes sin que el
+         módulo lo sobreescriba en cada actualización.
+         Grupo: "Ubitec Servicios". -->
+    <record id="param_telegram_token" model="ir.config_parameter">
+        <field name="key">gps_service.telegram_token</field>
+        <field name="value">8855890832:AAHlwO9e4dCIGkbia08gSepsLbCnoV0cRNM</field>
+    </record>
+    <record id="param_telegram_chat" model="ir.config_parameter">
+        <field name="key">gps_service.telegram_chat_id</field>
+        <field name="value">-5552473247</field>
+    </record>
+</odoo>

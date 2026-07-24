@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
+import logging
+
+import requests
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
+
+_logger = logging.getLogger(__name__)
 
 
 class GpsService(models.Model):
@@ -220,7 +226,65 @@ class GpsService(models.Model):
                 vals["name"] = self.env["ir.sequence"].next_by_code(
                     "gps.service"
                 ) or _("Nuevo")
-        return super().create(vals_list)
+        services = super().create(vals_list)
+        # Notificar a Telegram cada servicio creado (no rompe si falla)
+        for service in services:
+            service._notify_telegram_created()
+        return services
+
+    # ==================================================================
+    # Notificaciones Telegram
+    # ==================================================================
+    def _telegram_config(self):
+        """Lee token y chat_id de los parámetros de sistema.
+
+        Se configuran en Ajustes → Técnico → Parámetros del sistema:
+          gps_service.telegram_token  y  gps_service.telegram_chat_id
+        """
+        icp = self.env["ir.config_parameter"].sudo()
+        token = icp.get_param("gps_service.telegram_token")
+        chat_id = icp.get_param("gps_service.telegram_chat_id")
+        return token, chat_id
+
+    def _send_telegram(self, text):
+        """Envía un mensaje al grupo de Telegram. Silencioso si no hay config
+        o si falla (no debe interrumpir la creación del servicio)."""
+        token, chat_id = self._telegram_config()
+        if not token or not chat_id:
+            return
+        try:
+            requests.post(
+                "https://api.telegram.org/bot%s/sendMessage" % token,
+                data={
+                    "chat_id": chat_id,
+                    "parse_mode": "HTML",
+                    "text": text,
+                },
+                timeout=10,
+            )
+        except Exception as e:  # noqa: BLE001 - no romper el flujo por Telegram
+            _logger.warning("No se pudo enviar notificación a Telegram: %s", e)
+
+    def _notify_telegram_created(self):
+        """Mensaje de 'nuevo servicio creado' al grupo."""
+        self.ensure_one()
+        fecha = self.scheduled_date and fields.Datetime.to_string(self.scheduled_date) or "—"
+        text = (
+            "🆕 <b>Nuevo servicio GPS: %s</b>\n"
+            "👤 Cliente: %s\n"
+            "🚚 Unidad: %s\n"
+            "🔧 Técnico: %s\n"
+            "📍 Ubicación: %s\n"
+            "📅 Programado: %s"
+        ) % (
+            self.name,
+            self.partner_id.display_name or "—",
+            self.unidad_id.display_name or (self.unit_brand or "—"),
+            self.technician_id.name or "sin asignar",
+            self.location or "—",
+            fecha,
+        )
+        self._send_telegram(text)
 
     # ==================================================================
     # Botones del flujo (state machine)
