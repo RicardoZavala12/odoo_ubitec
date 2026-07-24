@@ -24,6 +24,7 @@ Los contextos están en subcarpetas. Cada una tiene un **`ACCESOS.md`** (vault c
 - **[ubitec/ACCESOS.md](ubitec/ACCESOS.md)** — 🔐 usuarios Odoo (`superadmin`/`super123`, `tecnico@ubitec.mx`/`tecnico123`…), Postgres, Docker
 - **[ubitec/DESPLIEGUE_contabo_dev_prod.md](ubitec/DESPLIEGUE_contabo_dev_prod.md)** — 🚀 Odoo en Contabo con dev/prod separados, scripts, reglas (Traccar NO se toca), fix "se queda cargando"
 - **[ubitec/CONTABO_guia_completa.md](ubitec/CONTABO_guia_completa.md)** — 🖥️ TODO de Contabo: SSH, credenciales, generar llaves, Deploy Key, comandos Odoo, fix cargando
+- [ubitec/telegram_notificaciones.md](ubitec/telegram_notificaciones.md) — 🤖 bot Telegram notifica al crear servicios (token, chat_id, cómo configurar)
 - [ubitec/project_ubitec_gps_service.md](ubitec/project_ubitec_gps_service.md) — módulo gps_service (Fase 1+2 listas, Fase 3 pendiente)
 - [ubitec/feedback_ubitec_jamas_inventar_data.md](ubitec/feedback_ubitec_jamas_inventar_data.md) — regla: nunca inventar datos
 
