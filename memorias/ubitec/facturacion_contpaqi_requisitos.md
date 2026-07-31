@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: eb02eef8-ae7b-4cdf-9888-8040b31f6d06
-  modified: 2026-07-24T18:53:51.625Z
+  modified: 2026-07-24T19:26:45.800Z
 ---
 
 ## Facturación CFDI en Odoo Ubitec vía CONTPAQi (24-jul-2026)
@@ -34,7 +34,19 @@ meter en Odoo → **SÍ se puede**, vía la **CONTPAQi Timbra API** (REST en la 
 ### Alternativas (por si CONTPAQi no da la API fácil)
 - Módulo OCA `l10n_mx_cfdi` (gratis) + PAC común (Finkok, Facturama, SW Sapien) — mejor documentados para Odoo Community. CONTPAQi es más popular como programa standalone que como PAC-para-integrar.
 
+### ⚠️ HALLAZGO IMPORTANTE (24-jul-2026): lo que el cliente dio NO es la API
+El cliente compartió acceso a **"CONTPAQi CFDI Facturación en Línea +"** (portal https://www.cfdi.com.mx/login/).
+- Credenciales: usuario `OIRL870504190` (es un RFC persona física) / pass `Oirl8705**` (OJO: cambiarla, pasó por chat).
+- Ese portal es para **facturar A MANO** (subir CSD .cer/.key, capturar factura campo por campo, timbrar desde ahí). NO tiene API para que Odoo lo consuma.
+- Son DOS productos distintos de CONTPAQi:
+  - **CFDI Facturación en Línea +** (lo que dieron) = portal manual. NO integrable a Odoo directo.
+  - **CONTPAQi Timbra** (API REST, developer portal) = lo que SÍ necesita Odoo.
+
+### Cómo proceder (decisión del usuario 24-jul-2026)
+- **Opción elegida: pedir la API a CONTPAQi.** Decirle al cliente que el acceso que dio es el portal manual, y que para integrar con Odoo se necesita la **API de Timbrado (CONTPAQi Timbra)** o acceso al developer portal (developers.contpaqinube.com).
+- Si CONTPAQi complica/cobra mucho la API → alternativa **Finkok o Facturama** (PACs con API fácil para Odoo Community; solo se necesitan los CSD del cliente + comprar timbres).
+
 ### Estado
-Solo análisis. Pendiente: que el cliente responda los requisitos → luego armar plan del módulo Odoo (embebido, como gps_service) que consuma la Timbra API. NO se ha codeado nada.
+Solo análisis. Pendiente: que el cliente consiga/confirme la CONTPAQi Timbra API → luego armar plan del módulo Odoo (embebido, como gps_service) que consuma la API. NO se ha codeado nada de facturación.
 
 Relacionado: [[project_ubitec_gps_service]], [[DESPLIEGUE_contabo_dev_prod]].

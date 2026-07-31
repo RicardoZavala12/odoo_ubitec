@@ -40,6 +40,7 @@ Los contextos están en subcarpetas. Cada una tiene un **`ACCESOS.md`** (vault c
 
 ### 📦 [otros/](otros/)
 - [otros/proyecto_cotizacion_israel_sorteo.md](otros/proyecto_cotizacion_israel_sorteo.md) — cotización plataforma sorteo Tierra Santa + plantilla
+- [otros/investigaciones_jul2026.md](otros/investigaciones_jul2026.md) — OpenVTS, SellioCRM, CONTPAQi API, Mautic, trámite SAT (jul 2026)
 
 ---
 
