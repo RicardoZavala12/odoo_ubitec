@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Renombra y reordena las etapas nativas de crm.lead al ciclo de venta real de Ubitec.
+         Se renombran en vez de crear nuevas para no perder los leads/cotizaciones ya ligados
+         a estas etapas. "Perdido" no es una etapa: se maneja con el mecanismo nativo de
+         Odoo (razones de pérdida + archivar el lead), ver punto 2.2. -->
+
+    <record id="crm.stage_lead1" model="crm.stage">
+        <field name="name">Prospecto</field>
+        <field name="sequence">1</field>
+    </record>
+
+    <record id="crm.stage_lead2" model="crm.stage">
+        <field name="name">Contactado</field>
+        <field name="sequence">2</field>
+    </record>
+
+    <record id="crm.stage_lead3" model="crm.stage">
+        <field name="name">Cotización enviada</field>
+        <field name="sequence">3</field>
+    </record>
+
+    <record id="stage_negociacion" model="crm.stage">
+        <field name="name">Negociación</field>
+        <field name="sequence">4</field>
+    </record>
+
+    <record id="stage_instalacion_agendada" model="crm.stage">
+        <field name="name">Instalación agendada</field>
+        <field name="sequence">5</field>
+    </record>
+
+    <record id="crm.stage_lead4" model="crm.stage">
+        <field name="name">Cliente activo</field>
+        <field name="sequence">6</field>
+    </record>
+</odoo>
