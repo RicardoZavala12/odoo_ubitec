@@ -12,12 +12,13 @@ adicionales, unidades+IMEI e historial de servicios.
     "category": "Sales/CRM",
     "author": "Ubitec",
     "license": "LGPL-3",
-    "depends": ["base", "contacts", "mail"],
+    "depends": ["base", "contacts", "mail", "web"],
     "data": [
         "security/ir.model.access.csv",
         "data/cron.xml",
         "views/res_partner_views.xml",
         "views/ubitec_unidad_views.xml",
+        "views/login_layout.xml",
     ],
     "assets": {
         "web.assets_backend": [
