@@ -16,7 +16,6 @@ adicionales, unidades+IMEI e historial de servicios.
     "data": [
         "security/ir.model.access.csv",
         "data/cron.xml",
-        "data/crm_stages.xml",
         "views/res_partner_views.xml",
         "views/ubitec_unidad_views.xml",
         "views/login_layout.xml",
