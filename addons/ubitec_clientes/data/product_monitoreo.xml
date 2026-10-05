@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="product_monitoreo_gps" model="product.template">
+        <field name="name">Monitoreo GPS</field>
+        <field name="type">service</field>
+        <field name="sale_ok">1</field>
+        <field name="purchase_ok">0</field>
+        <field name="list_price">0.0</field>
+    </record>
+</odoo>

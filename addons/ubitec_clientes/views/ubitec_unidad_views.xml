@@ -6,7 +6,7 @@
         <field name="name">ubitec.unidad.list</field>
         <field name="model">ubitec.unidad</field>
         <field name="arch" type="xml">
-            <list string="Equipos GPS" editable="bottom">
+            <list string="Equipos GPS">
                 <field name="folio"/>
                 <field name="imei"/>
                 <field name="numero_serie"/>
@@ -31,7 +31,20 @@
         <field name="model">ubitec.unidad</field>
         <field name="arch" type="xml">
             <form string="Equipo GPS">
+                <header>
+                    <button name="action_crear_plan_mensual" string="Dar de alta plan mensual" type="object"
+                            class="oe_highlight" invisible="contract_line_count &gt; 0"/>
+                    <button name="action_crear_plan_anual" string="Dar de alta plan anual" type="object"
+                            invisible="contract_line_count &gt; 0"/>
+                </header>
                 <sheet>
+                    <field name="contract_line_count" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_ver_suscripcion" type="object" class="oe_stat_button"
+                                icon="fa-file-text-o" invisible="contract_line_count == 0">
+                            <field name="contract_line_count" widget="statinfo" string="Suscripción"/>
+                        </button>
+                    </div>
                     <div class="oe_title">
                         <label for="imei"/>
                         <h1><field name="imei" placeholder="IMEI del equipo"/></h1>

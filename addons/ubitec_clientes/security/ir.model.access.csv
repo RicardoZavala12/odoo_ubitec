@@ -3,3 +3,9 @@ access_ubitec_unidad_user,ubitec.unidad.user,model_ubitec_unidad,base.group_user
 access_ubitec_servicio_user,ubitec.servicio.user,model_ubitec_servicio,base.group_user,1,1,1,1
 access_ubitec_pago_user,ubitec.pago.user,model_ubitec_pago,base.group_user,1,1,1,1
 access_ubitec_sim_user,ubitec.sim.user,model_ubitec_sim,base.group_user,1,1,1,1
+access_contract_contract_ubitec_user,contract.contract.ubitec.user,contract.model_contract_contract,base.group_user,1,1,1,0
+access_contract_line_ubitec_user,contract.line.ubitec.user,contract.model_contract_line,base.group_user,1,1,1,0
+access_contract_modification_ubitec_user,contract.modification.ubitec.user,contract.model_contract_modification,base.group_user,1,1,1,0
+access_contract_template_ubitec_user,contract.template.ubitec.user,contract.model_contract_template,base.group_user,1,0,0,0
+access_contract_template_line_ubitec_user,contract.template.line.ubitec.user,contract.model_contract_template_line,base.group_user,1,0,0,0
+access_contract_manually_invoice_ubitec_user,contract.manually.invoice.ubitec.user,contract.model_contract_manually_create_invoice,base.group_user,1,1,1,0
