@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ===== Cotizacion (demo, generica mientras el cliente da su formato) ===== -->
+    <template id="report_crm_quote_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h2>Cotización</h2>
+                <p>
+                    Cliente:
+                    <span t-field="doc.partner_id.name"/>
+                </p>
+                <table class="table table-sm o_main_table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="doc.product_line_ids" t-as="line">
+                            <td><span t-field="line.product_id.name"/></td>
+                            <td><span t-field="line.quantity"/></td>
+                            <td>
+                                <span t-field="line.price_unit"
+                                      t-options="{'widget': 'monetary', 'display_currency': doc.company_currency}"/>
+                            </td>
+                            <td>
+                                <span t-field="line.subtotal"
+                                      t-options="{'widget': 'monetary', 'display_currency': doc.company_currency}"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 class="text-end">
+                    Total:
+                    <span t-field="doc.amount_total"
+                          t-options="{'widget': 'monetary', 'display_currency': doc.company_currency}"/>
+                </h3>
+                <p class="text-muted">Cotización válida por 15 días. Precios sujetos a cambio sin previo aviso.</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_crm_quote">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ubitec_clientes.report_crm_quote_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_crm_quote" model="ir.actions.report">
+        <field name="name">Cotización</field>
+        <field name="model">crm.lead</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ubitec_clientes.report_crm_quote</field>
+        <field name="report_file">ubitec_clientes.report_crm_quote</field>
+        <field name="print_report_name">'Cotizacion - %s' % (object.partner_id.name or object.name)</field>
+    </record>
+
+    <!-- ===== Bienvenida (demo, generica mientras el cliente da su formato) ===== -->
+    <template id="report_crm_welcome_document">
+        <t t-call="web.external_layout">
+            <div class="page">
+                <h1>¡Felicidades!</h1>
+                <p>
+                    Estimado/a
+                    <span t-field="doc.partner_id.name"/>,
+                </p>
+                <p>
+                    Gracias por adquirir los servicios de rastreo satelital de Ubitec.
+                    A partir de hoy formas parte de nuestra familia de clientes.
+                </p>
+                <p>Nuestro equipo te contactará en breve para coordinar la instalación de tu equipo.</p>
+                <p>¡Bienvenido/a a Ubitec!</p>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_crm_welcome">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="ubitec_clientes.report_crm_welcome_document"/>
+            </t>
+        </t>
+    </template>
+
+    <record id="action_report_crm_welcome" model="ir.actions.report">
+        <field name="name">Bienvenida</field>
+        <field name="model">crm.lead</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ubitec_clientes.report_crm_welcome</field>
+        <field name="report_file">ubitec_clientes.report_crm_welcome</field>
+        <field name="print_report_name">'Bienvenida - %s' % (object.partner_id.name or object.name)</field>
+    </record>
+</odoo>

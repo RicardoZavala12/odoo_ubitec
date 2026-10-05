@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Ficha rapida (quick create) de oportunidad: reemplaza el campo libre
+         "Oportunidad" por una tabla de productos con cantidad y subtotal, y
+         deja "Ingreso esperado" en solo lectura (se calcula solo). -->
+    <record id="quick_create_opportunity_form_ubitec" model="ir.ui.view">
+        <field name="name">crm.lead.form.quick_create.ubitec</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.quick_create_opportunity_form"/>
+        <field name="arch" type="xml">
+            <field name="name" position="replace">
+                <field name="product_line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+                        <field name="price_unit" column_invisible="1"/>
+                        <field name="subtotal" column_invisible="1"/>
+                    </list>
+                </field>
+            </field>
+            <field name="expected_revenue" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="priority" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </field>
+        </field>
+    </record>
+
+    <!-- Mismo cambio en el formulario completo de la oportunidad -->
+    <record id="crm_lead_view_form_ubitec" model="ir.ui.view">
+        <field name="name">crm.lead.form.ubitec</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <field name="expected_revenue" position="attributes">
+                <attribute name="readonly">1</attribute>
+            </field>
+            <field name="expected_revenue" position="after">
+                <field name="product_line_ids">
+                    <list editable="bottom">
+                        <field name="product_id"/>
+                        <field name="quantity"/>
+                        <field name="price_unit"/>
+                        <field name="subtotal" readonly="1"/>
+                    </list>
+                </field>
+            </field>
+            <field name="stage_id" position="before">
+                <field name="is_quote_sent_stage" invisible="1"/>
+                <field name="is_won_stage" invisible="1"/>
+                <button name="action_send_quote_email" string="Enviar email" type="object"
+                        class="btn-primary" invisible="not is_quote_sent_stage"/>
+                <button name="action_send_welcome_email" string="Enviar bienvenida" type="object"
+                        class="btn-primary" invisible="not is_won_stage"/>
+            </field>
+            <page name="lead" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </page>
+        </field>
+    </record>
+</odoo>

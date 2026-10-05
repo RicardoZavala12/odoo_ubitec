@@ -3,3 +3,4 @@ access_ubitec_unidad_user,ubitec.unidad.user,model_ubitec_unidad,base.group_user
 access_ubitec_servicio_user,ubitec.servicio.user,model_ubitec_servicio,base.group_user,1,1,1,1
 access_ubitec_pago_user,ubitec.pago.user,model_ubitec_pago,base.group_user,1,1,1,1
 access_ubitec_sim_user,ubitec.sim.user,model_ubitec_sim,base.group_user,1,1,1,1
+access_crm_lead_product_line_user,crm.lead.product.line.user,model_crm_lead_product_line,base.group_user,1,1,1,1
