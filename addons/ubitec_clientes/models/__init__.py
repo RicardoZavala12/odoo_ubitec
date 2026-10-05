@@ -5,3 +5,4 @@ from . import ubitec_sim
 from . import res_partner
 from . import crm_lead
 from . import crm_lead_product_line
+from . import contract_line
