@@ -55,10 +55,67 @@ class UbitecUnidad(models.Model):
         string="Nº suscripciones", compute="_compute_contract_line_count"
     )
 
+    # ── Historial de movimientos (punto 4 del alcance) ──
+    movimiento_ids = fields.One2many(
+        "ubitec.unidad.movimiento", "unidad_id", string="Movimientos"
+    )
+
     @api.depends("contract_line_ids")
     def _compute_contract_line_count(self):
         for unidad in self:
             unidad.contract_line_count = len(unidad.contract_line_ids)
+
+    @api.model
+    def _tipo_movimiento(self, estado_anterior, estado_nuevo):
+        if estado_anterior == "baja" and estado_nuevo != "baja":
+            return "reactivado"
+        return {
+            "stock": "entrada",
+            "instalado": "instalado",
+            "baja": "baja",
+        }.get(estado_nuevo, "entrada")
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        unidades = super().create(vals_list)
+        estado_label = dict(self._fields["estado"].selection)
+        for unidad in unidades:
+            self.env["ubitec.unidad.movimiento"].create({
+                "unidad_id": unidad.id,
+                "tipo": self._tipo_movimiento(False, unidad.estado),
+                "estado_nuevo": estado_label.get(unidad.estado, unidad.estado),
+                "partner_id": unidad.partner_id.id,
+                "nota": "Alta del equipo",
+            })
+        return unidades
+
+    def write(self, vals):
+        estado_label = dict(self._fields["estado"].selection)
+        antes = {
+            unidad.id: (unidad.estado, unidad.partner_id)
+            for unidad in self
+        } if ("estado" in vals or "partner_id" in vals) else {}
+
+        res = super().write(vals)
+
+        for unidad in self:
+            estado_antes, partner_antes = antes.get(unidad.id, (None, None))
+            if "estado" in vals and vals["estado"] != estado_antes:
+                self.env["ubitec.unidad.movimiento"].create({
+                    "unidad_id": unidad.id,
+                    "tipo": self._tipo_movimiento(estado_antes, vals["estado"]),
+                    "estado_anterior": estado_label.get(estado_antes, estado_antes),
+                    "estado_nuevo": estado_label.get(vals["estado"], vals["estado"]),
+                    "partner_id": unidad.partner_id.id,
+                })
+            elif "partner_id" in vals and partner_antes is not None and vals["partner_id"] != partner_antes.id:
+                self.env["ubitec.unidad.movimiento"].create({
+                    "unidad_id": unidad.id,
+                    "tipo": "reasignado",
+                    "partner_id": vals["partner_id"],
+                    "nota": "Antes: %s" % (partner_antes.name or "(sin cliente)"),
+                })
+        return res
 
     def _crear_suscripcion(self, rule_type):
         self.ensure_one()

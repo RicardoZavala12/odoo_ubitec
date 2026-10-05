@@ -8,7 +8,7 @@ Ubitec: esquema (Venta/Comodato/etc), unidades, costos, plan/mensualidad,
 registro de pagos, estado (Nuevo/Activo/Inactivo automático), servicios
 adicionales, unidades+IMEI e historial de servicios.
     """,
-    "version": "18.0.3.7.0",
+    "version": "18.0.4.0.0",
     "category": "Sales/CRM",
     "author": "Ubitec",
     "license": "LGPL-3",

@@ -10,3 +10,4 @@ access_contract_modification_ubitec_user,contract.modification.ubitec.user,contr
 access_contract_template_ubitec_user,contract.template.ubitec.user,contract.model_contract_template,base.group_user,1,0,0,0
 access_contract_template_line_ubitec_user,contract.template.line.ubitec.user,contract.model_contract_template_line,base.group_user,1,0,0,0
 access_contract_manually_invoice_ubitec_user,contract.manually.invoice.ubitec.user,contract.model_contract_manually_create_invoice,base.group_user,1,1,1,0
+access_ubitec_unidad_movimiento_user,ubitec.unidad.movimiento.user,model_ubitec_unidad_movimiento,base.group_user,1,0,1,0

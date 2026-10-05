@@ -66,7 +66,7 @@
                     <group>
                         <group string="Línea / SIM">
                             <field name="sim"/>
-                            <field name="icc"/>
+                            <field name="icc" invisible="1"/>
                             <field name="fecha_activacion"/>
                         </group>
                         <group string="Fechas y costo">
@@ -78,6 +78,19 @@
                     </group>
                     <group string="Notas">
                         <field name="notas" nolabel="1"/>
+                    </group>
+                    <group string="Historial de movimientos">
+                        <field name="movimiento_ids" nolabel="1" readonly="1">
+                            <list create="false" delete="false">
+                                <field name="fecha"/>
+                                <field name="tipo"/>
+                                <field name="estado_anterior"/>
+                                <field name="estado_nuevo"/>
+                                <field name="partner_id"/>
+                                <field name="usuario_id"/>
+                                <field name="nota"/>
+                            </list>
+                        </field>
                     </group>
                 </sheet>
             </form>
