@@ -12,10 +12,12 @@ Módulo a la medida de Ubitec para gestionar servicios de instalación de GPS:
 - Quien valida revisa el servicio finalizado y lo aprueba, con opción de
   reabrir en Post-servicio si se requiere reatender.
 
-FASE 1: núcleo del flujo (estados + botones + folio + enlace a unidad).
-Las evidencias fotográficas y las vistas por rol llegan en fases posteriores.
+Incluye evidencias fotográficas obligatorias por etapa (6 fotos: antes de
+instalar, instalación y al terminar) que bloquean avanzar el flujo si faltan,
+y permisos por rol (Técnico / Agenda-Validación / Administrador) con reglas
+de registro: el técnico solo ve sus propios servicios asignados.
     """,
-    "version": "18.0.1.0.0",
+    "version": "18.0.1.2.0",
     "category": "Services/Field Service",
     "author": "Ubitec",
     "license": "LGPL-3",
@@ -27,6 +29,7 @@ Las evidencias fotográficas y las vistas por rol llegan en fases posteriores.
         "data/telegram_config.xml",
         "views/gps_service_views.xml",
         "views/gps_service_menus.xml",
+        "views/res_config_settings_views.xml",
     ],
     "installable": True,
     "application": True,

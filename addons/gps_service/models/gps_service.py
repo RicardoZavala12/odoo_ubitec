@@ -236,21 +236,23 @@ class GpsService(models.Model):
     # Notificaciones Telegram
     # ==================================================================
     def _telegram_config(self):
-        """Lee token y chat_id de los parámetros de sistema.
+        """Lee si esta activo, token y chat_id de los parametros de sistema.
 
-        Se configuran en Ajustes → Técnico → Parámetros del sistema:
-          gps_service.telegram_token  y  gps_service.telegram_chat_id
+        Editable desde Ajustes -> Servicios GPS. Vive en ir.config_parameter:
+          gps_service.telegram_enabled, .telegram_token, .telegram_chat_id
         """
         icp = self.env["ir.config_parameter"].sudo()
+        enabled = icp.get_param("gps_service.telegram_enabled")
         token = icp.get_param("gps_service.telegram_token")
         chat_id = icp.get_param("gps_service.telegram_chat_id")
-        return token, chat_id
+        return enabled, token, chat_id
 
     def _send_telegram(self, text):
-        """Envía un mensaje al grupo de Telegram. Silencioso si no hay config
-        o si falla (no debe interrumpir la creación del servicio)."""
-        token, chat_id = self._telegram_config()
-        if not token or not chat_id:
+        """Envía un mensaje al grupo de Telegram. Silencioso si esta
+        desactivado, si no hay config, o si falla (no debe interrumpir la
+        creación del servicio)."""
+        enabled, token, chat_id = self._telegram_config()
+        if not enabled or not token or not chat_id:
             return
         try:
             requests.post(

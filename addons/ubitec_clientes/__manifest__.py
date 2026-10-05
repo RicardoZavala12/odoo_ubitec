@@ -8,12 +8,13 @@ Ubitec: esquema (Venta/Comodato/etc), unidades, costos, plan/mensualidad,
 registro de pagos, estado (Nuevo/Activo/Inactivo automático), servicios
 adicionales, unidades+IMEI e historial de servicios.
     """,
-    "version": "18.0.4.0.0",
+    "version": "18.0.4.5.0",
     "category": "Sales/CRM",
     "author": "Ubitec",
     "license": "LGPL-3",
-    "depends": ["base", "contacts", "mail", "web", "crm", "contract", "contract_line_successor", "base_geolocalize"],
+    "depends": ["base", "contacts", "mail", "web", "crm", "contract", "contract_line_successor", "base_geolocalize", "web_responsive"],
     "data": [
+        "security/ubitec_security.xml",
         "security/ir.model.access.csv",
         "data/cron.xml",
         "data/product_monitoreo.xml",
@@ -28,6 +29,7 @@ adicionales, unidades+IMEI e historial de servicios.
         "web.assets_backend": [
             "ubitec_clientes/static/src/password_toggle/password_toggle.js",
             "ubitec_clientes/static/src/password_toggle/password_toggle.xml",
+            "ubitec_clientes/static/src/hide_systray/hide_systray.js",
         ],
     },
     "installable": True,

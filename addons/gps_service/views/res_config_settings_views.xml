@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.gps_service</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority" eval="20"/>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app data-string="Servicios GPS" string="Servicios GPS" name="gps_service"
+                     groups="gps_service.group_gps_manager">
+                    <block title="Notificaciones por Telegram">
+                        <setting
+                            id="gps_telegram_enabled"
+                            help="Al crear un servicio nuevo, se avisa al grupo de Telegram configurado abajo.">
+                            <field name="gps_telegram_enabled"/>
+                        </setting>
+                        <setting
+                            id="gps_telegram_credentials"
+                            invisible="not gps_telegram_enabled">
+                            <div class="row">
+                                <label for="gps_telegram_token" string="Token del bot" class="col-3"/>
+                                <field name="gps_telegram_token" class="col-9"/>
+                            </div>
+                            <div class="row mt-2">
+                                <label for="gps_telegram_chat_id" string="Chat ID" class="col-3"/>
+                                <field name="gps_telegram_chat_id" class="col-9"/>
+                            </div>
+                        </setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
