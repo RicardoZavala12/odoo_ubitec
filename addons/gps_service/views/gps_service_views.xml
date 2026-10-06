@@ -8,15 +8,22 @@
         <field name="arch" type="xml">
             <form string="Servicio de GPS">
                 <header>
-                    <!-- Botones del flujo: cada uno aparece solo en su estado -->
+                    <field name="is_assigned_technician" invisible="1"/>
+                    <!-- Botones del flujo: cada uno aparece solo en su estado.
+                         Aceptar/Iniciar/Finalizar son del tecnico asignado
+                         (el Administrador tambien los ve, como respaldo). -->
                     <button name="action_assign" type="object" string="Asignar técnico"
-                            class="btn-primary" invisible="state != 'draft'"/>
+                            class="btn-primary" invisible="state != 'draft'"
+                            groups="gps_service.group_gps_scheduler"/>
                     <button name="action_accept" type="object" string="Aceptar servicio"
-                            class="btn-primary" invisible="state != 'assigned'"/>
+                            class="btn-primary"
+                            invisible="state != 'assigned' or not is_assigned_technician"/>
                     <button name="action_start" type="object" string="Iniciar servicio"
-                            class="btn-primary" invisible="state != 'accepted'"/>
+                            class="btn-primary"
+                            invisible="state != 'accepted' or not is_assigned_technician"/>
                     <button name="action_finish" type="object" string="Finalizar servicio"
-                            class="btn-primary" invisible="state != 'in_progress'"/>
+                            class="btn-primary"
+                            invisible="state != 'in_progress' or not is_assigned_technician"/>
                     <button name="action_validate" type="object" string="Validar"
                             class="btn-primary" invisible="state != 'to_validate'"
                             groups="gps_service.group_gps_scheduler"/>
@@ -33,16 +40,18 @@
                            statusbar_visible="draft,assigned,accepted,in_progress,to_validate,done"/>
                 </header>
                 <sheet>
+                    <field name="can_edit_schedule" invisible="1"/>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
                     <group>
                         <group string="Servicio">
-                            <field name="partner_id"/>
-                            <field name="unidad_id"/>
-                            <field name="plates"/>
-                            <field name="location"/>
-                            <field name="scheduled_date"/>
+                            <field name="service_type" readonly="not can_edit_schedule" widget="radio"/>
+                            <field name="partner_id" readonly="not can_edit_schedule" options="{'no_open': True}"/>
+                            <field name="unidad_id" readonly="not can_edit_schedule" options="{'no_open': True}"/>
+                            <field name="plates" readonly="not can_edit_schedule"/>
+                            <field name="location" readonly="not can_edit_schedule"/>
+                            <field name="scheduled_date" readonly="not can_edit_schedule"/>
                         </group>
                         <group string="Datos del equipo">
                             <field name="imei"/>
@@ -52,7 +61,7 @@
                     </group>
                     <group>
                         <group string="Asignación">
-                            <field name="technician_id"/>
+                            <field name="technician_id" readonly="not can_edit_schedule" options="{'no_open': True}"/>
                         </group>
                         <group string="Tiempos" invisible="state in ('draft', 'assigned', 'accepted')">
                             <field name="start_time"/>
@@ -61,7 +70,7 @@
                         </group>
                     </group>
                     <group string="Validación" invisible="state != 'done'">
-                        <field name="validated_by"/>
+                        <field name="validated_by" options="{'no_open': True}"/>
                         <field name="validation_date"/>
                     </group>
                     <notebook>
@@ -107,7 +116,8 @@
                                 </kanban>
                                 <form>
                                     <group>
-                                        <field name="stage"/>
+                                        <field name="service_state" invisible="1"/>
+                                        <field name="stage" readonly="service_state == 'accepted'"/>
                                         <field name="photo_type"/>
                                         <field name="image" widget="image"/>
                                         <field name="note"/>
@@ -116,7 +126,8 @@
                             </field>
                         </page>
                         <page string="Indicaciones">
-                            <field name="notes" placeholder="Instrucciones para el técnico..."/>
+                            <field name="notes" placeholder="Instrucciones para el técnico..."
+                                   readonly="not can_edit_schedule"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -132,6 +143,7 @@
         <field name="arch" type="xml">
             <list string="Servicios de GPS">
                 <field name="name"/>
+                <field name="service_type"/>
                 <field name="partner_id"/>
                 <field name="unidad_id"/>
                 <field name="plates"/>
@@ -167,6 +179,8 @@
                 <group expand="0" string="Agrupar por">
                     <filter name="group_state" string="Estado"
                             context="{'group_by': 'state'}"/>
+                    <filter name="group_service_type" string="Tipo de servicio"
+                            context="{'group_by': 'service_type'}"/>
                     <filter name="group_technician" string="Técnico"
                             context="{'group_by': 'technician_id'}"/>
                     <filter name="group_partner" string="Cliente"
@@ -176,11 +190,27 @@
         </field>
     </record>
 
+    <!-- ===================== CALENDAR ===================== -->
+    <record id="view_gps_service_calendar" model="ir.ui.view">
+        <field name="name">gps.service.calendar</field>
+        <field name="model">gps.service</field>
+        <field name="arch" type="xml">
+            <calendar string="Calendario de servicios" date_start="scheduled_date"
+                      color="technician_id" mode="week" event_limit="5"
+                      quick_create="0">
+                <field name="partner_id"/>
+                <field name="service_type"/>
+                <field name="technician_id" filters="1" invisible="1"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+
     <!-- ===================== ACTION ===================== -->
     <record id="action_gps_service" model="ir.actions.act_window">
         <field name="name">Servicios de GPS</field>
         <field name="res_model">gps.service</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,calendar,form</field>
         <field name="search_view_id" ref="view_gps_service_search"/>
         <field name="help" type="html">
             <p class="o_view_nocontent_smiling_face">

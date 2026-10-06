@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="photo_type_unit" model="gps.service.photo.type">
+        <field name="name">Unidad</field>
+        <field name="code">unit</field>
+        <field name="stage">before</field>
+        <field name="sequence">10</field>
+    </record>
+    <record id="photo_type_plate" model="gps.service.photo.type">
+        <field name="name">Placa</field>
+        <field name="code">plate</field>
+        <field name="stage">before</field>
+        <field name="sequence">20</field>
+    </record>
+    <record id="photo_type_serial" model="gps.service.photo.type">
+        <field name="name">Número de serie</field>
+        <field name="code">serial</field>
+        <field name="stage">before</field>
+        <field name="sequence">30</field>
+    </record>
+    <record id="photo_type_dash_closed" model="gps.service.photo.type">
+        <field name="name">Tablero cerrado</field>
+        <field name="code">dash_closed</field>
+        <field name="stage">before</field>
+        <field name="sequence">40</field>
+    </record>
+    <record id="photo_type_install" model="gps.service.photo.type">
+        <field name="name">Evidencia de instalación</field>
+        <field name="code">install</field>
+        <field name="stage">install</field>
+        <field name="sequence">50</field>
+    </record>
+    <record id="photo_type_dash_assembled" model="gps.service.photo.type">
+        <field name="name">Tablero armado</field>
+        <field name="code">dash_assembled</field>
+        <field name="stage">after</field>
+        <field name="sequence">60</field>
+    </record>
+
+</odoo>

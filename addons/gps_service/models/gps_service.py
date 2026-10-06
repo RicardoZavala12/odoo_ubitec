@@ -67,6 +67,18 @@ class GpsService(models.Model):
         store=True,
         readonly=True,
     )
+    service_type = fields.Selection(
+        selection=[
+            ("installation", "Instalación"),
+            ("reinstallation", "Reinstalación"),
+            ("deinstallation", "Desinstalación"),
+            ("review", "Revisión"),
+        ],
+        string="Tipo de servicio",
+        required=True,
+        default="installation",
+        tracking=True,
+    )
     # Placas: propio del servicio (ubitec.unidad no las guarda)
     plates = fields.Char(string="Placas", tracking=True)
     location = fields.Char(
@@ -104,6 +116,32 @@ class GpsService(models.Model):
         tracking=True,
         copy=False,
     )
+    is_assigned_technician = fields.Boolean(
+        string="Soy el técnico asignado (o admin)",
+        compute="_compute_is_assigned_technician",
+        help="Controla la visibilidad de Aceptar/Iniciar/Finalizar: solo el "
+             "técnico asignado a este servicio (o el Administrador).",
+    )
+
+    @api.depends("technician_id")
+    def _compute_is_assigned_technician(self):
+        is_manager = self.env.user.has_group("gps_service.group_gps_manager")
+        for service in self:
+            service.is_assigned_technician = is_manager or service.technician_id == self.env.user
+
+    can_edit_schedule = fields.Boolean(
+        string="Puede editar los datos del servicio",
+        compute="_compute_can_edit_schedule",
+        help="Solo Agenda/Validación y Administrador capturan o cambian los "
+             "datos del servicio (cliente, equipo, placas, ubicación, fecha, "
+             "técnico). El técnico solo avanza el flujo y sube fotos.",
+    )
+
+    @api.depends_context("uid")
+    def _compute_can_edit_schedule(self):
+        can_edit = self.env.user.has_group("gps_service.group_gps_scheduler")
+        for service in self:
+            service.can_edit_schedule = can_edit
 
     # ------------------------------------------------------------------
     # Tiempos (automáticos)
@@ -187,7 +225,7 @@ class GpsService(models.Model):
     @api.depends("photo_ids", "photo_ids.photo_type")
     def _compute_photos_complete(self):
         for service in self:
-            tipos = set(service.photo_ids.mapped("photo_type"))
+            tipos = set(service.photo_ids.mapped("photo_type.code"))
             service.photos_complete = all(
                 t in tipos for t in service._REQUIRED_PHOTOS
             )
@@ -195,10 +233,10 @@ class GpsService(models.Model):
     def _missing_photos(self):
         """Devuelve las etiquetas de TODAS las fotos obligatorias que faltan."""
         self.ensure_one()
-        labels = dict(
-            self.env["gps.service.photo"]._fields["photo_type"].selection
-        )
-        tipos = set(self.photo_ids.mapped("photo_type"))
+        labels = {
+            t.code: t.name for t in self.env["gps.service.photo.type"].search([])
+        }
+        tipos = set(self.photo_ids.mapped("photo_type.code"))
         return [labels[t] for t in self._REQUIRED_PHOTOS if t not in tipos]
 
     def _missing_photos_for_stages(self, stages):
@@ -207,10 +245,10 @@ class GpsService(models.Model):
         Ej: _missing_photos_for_stages(['before']) → fotos de "antes" que faltan.
         """
         self.ensure_one()
-        labels = dict(
-            self.env["gps.service.photo"]._fields["photo_type"].selection
-        )
-        tipos = set(self.photo_ids.mapped("photo_type"))
+        labels = {
+            t.code: t.name for t in self.env["gps.service.photo.type"].search([])
+        }
+        tipos = set(self.photo_ids.mapped("photo_type.code"))
         requeridas = []
         for stage in stages:
             requeridas += self._PHOTOS_BY_STAGE.get(stage, [])

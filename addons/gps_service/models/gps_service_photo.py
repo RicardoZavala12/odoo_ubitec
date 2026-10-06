@@ -25,18 +25,18 @@ class GpsServicePhoto(models.Model):
         ondelete="cascade",
         index=True,
     )
-    # Tipo de foto: define cuál de las 6 evidencias es
-    photo_type = fields.Selection(
-        selection=[
-            ("unit", "Unidad"),
-            ("plate", "Placa"),
-            ("serial", "Número de serie"),
-            ("dash_closed", "Tablero cerrado"),
-            ("install", "Evidencia de instalación"),
-            ("dash_assembled", "Tablero armado"),
-        ],
+    service_state = fields.Selection(
+        related="service_id.state",
+        string="Estado del servicio",
+    )
+    # Tipo de foto: cual de las evidencias es. Relacion real al catalogo
+    # gps.service.photo.type (en vez de lista fija) para que el campo se
+    # filtre en automatico segun la Etapa elegida (domain reactivo).
+    photo_type = fields.Many2one(
+        "gps.service.photo.type",
         string="Tipo de evidencia",
         required=True,
+        domain="[('stage', '=', stage)]",
     )
     stage = fields.Selection(
         selection=[

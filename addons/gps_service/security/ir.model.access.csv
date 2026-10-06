@@ -5,3 +5,5 @@ access_gps_service_manager,gps.service.manager,model_gps_service,group_gps_manag
 access_gps_photo_technician,gps.service.photo.technician,model_gps_service_photo,group_gps_technician,1,1,1,1
 access_gps_photo_scheduler,gps.service.photo.scheduler,model_gps_service_photo,group_gps_scheduler,1,1,1,1
 access_gps_photo_manager,gps.service.photo.manager,model_gps_service_photo,group_gps_manager,1,1,1,1
+access_gps_photo_type_technician,gps.service.photo.type.technician,model_gps_service_photo_type,group_gps_technician,1,0,0,0
+access_gps_photo_type_manager,gps.service.photo.type.manager,model_gps_service_photo_type,group_gps_manager,1,1,1,1

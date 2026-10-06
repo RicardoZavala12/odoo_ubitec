@@ -17,7 +17,7 @@ instalar, instalación y al terminar) que bloquean avanzar el flujo si faltan,
 y permisos por rol (Técnico / Agenda-Validación / Administrador) con reglas
 de registro: el técnico solo ve sus propios servicios asignados.
     """,
-    "version": "18.0.1.2.0",
+    "version": "18.0.1.10.0",
     "category": "Services/Field Service",
     "author": "Ubitec",
     "license": "LGPL-3",
@@ -27,6 +27,7 @@ de registro: el técnico solo ve sus propios servicios asignados.
         "security/ir.model.access.csv",
         "data/sequence_data.xml",
         "data/telegram_config.xml",
+        "data/photo_types.xml",
         "views/gps_service_views.xml",
         "views/gps_service_menus.xml",
         "views/res_config_settings_views.xml",
