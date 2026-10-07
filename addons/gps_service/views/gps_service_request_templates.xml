@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="service_request_form" name="Solicitud pública de servicio GPS">
+        <html lang="es">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Solicitud de servicio GPS | Ubitec</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    html { min-height: 100%; color-scheme: light; }
+                    body {
+                        margin: 0;
+                        min-height: 100vh;
+                        min-height: 100svh;
+                        padding: 28px 16px;
+                        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+                        font-size: 16px;
+                        line-height: 1.55;
+                        color: #1d2b42;
+                        background: radial-gradient(ellipse at 0% 0%, #d9eaff 0%, transparent 60%),
+                                    radial-gradient(ellipse at 100% 85%, #e8dff9 0%, transparent 55%),
+                                    linear-gradient(145deg, #f4f8ff, #edf3fa 55%, #f8f5fc);
+                    }
+                    main {
+                        width: 100%;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 28px 20px;
+                        background: rgba(255, 255, 255, 0.82);
+                        border: 1px solid rgba(255, 255, 255, 0.85);
+                        border-radius: 28px;
+                        box-shadow: 0 20px 65px rgba(46, 73, 120, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+                        -webkit-backdrop-filter: blur(24px) saturate(140%);
+                        backdrop-filter: blur(24px) saturate(140%);
+                    }
+                    h1 {
+                        margin: 0 0 12px;
+                        font-size: clamp(1.65rem, 5vw, 2rem);
+                        font-weight: 700;
+                        line-height: 1.2;
+                        letter-spacing: -0.035em;
+                        overflow-wrap: break-word;
+                    }
+                    p { margin: 0; color: #52627a; }
+                    @media (min-width: 640px) {
+                        body { padding: 56px 24px; }
+                        main { padding: 40px; }
+                    }
+
+                    form { margin-top: 28px; }
+                    label {
+                        display: block;
+                        margin: 22px 0 8px;
+                        font-size: 0.9rem;
+                        font-weight: 600;
+                        color: #34445c;
+                    }
+                    input:not([type="hidden"]), select, textarea {
+                        display: block;
+                        width: 100%;
+                        min-width: 0;
+                        min-height: 52px;
+                        padding: 14px 16px;
+                        border: 0;
+                        border-radius: 14px;
+                        background: rgba(235, 241, 249, 0.75);
+                        color: #1d2b42;
+                        font: inherit;
+                        font-size: 16px;
+                        line-height: 1.5;
+                        box-shadow: inset 0 0 0 1px rgba(96, 122, 157, 0.14), 0 2px 6px rgba(46, 73, 120, 0.025);
+                        transition: background 160ms ease, box-shadow 160ms ease;
+                    }
+                    select { cursor: pointer; }
+                    textarea { resize: vertical; min-height: 144px; }
+                    input:not([type="hidden"]):focus, select:focus, textarea:focus {
+                        outline: none;
+                        background: rgba(248, 251, 255, 0.95);
+                        box-shadow: inset 0 0 0 1.5px #007aff, 0 0 0 4px rgba(0, 122, 255, 0.13), 0 5px 18px rgba(0, 122, 255, 0.08);
+                    }
+                    button {
+                        width: 100%;
+                        min-height: 54px;
+                        margin-top: 30px;
+                        padding: 15px 24px;
+                        border: 0;
+                        border-radius: 999px;
+                        background: linear-gradient(180deg, #0782ff, #006bea);
+                        color: #fff;
+                        font: inherit;
+                        font-weight: 600;
+                        box-shadow: 0 8px 24px rgba(0, 112, 240, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+                        cursor: pointer;
+                        transition: background 160ms ease, box-shadow 160ms ease;
+                    }
+                    button:focus-visible {
+                        outline: 3px solid #005fcc;
+                        outline-offset: 4px;
+                    }
+                    button:active { background: #005fcc; box-shadow: 0 3px 12px rgba(0, 112, 240, 0.18); }
+                    .error {
+                        margin-top: 20px;
+                        padding: 14px 16px;
+                        border-radius: 14px;
+                        background: rgba(255, 231, 230, 0.8);
+                        color: #a12020;
+                        box-shadow: inset 0 0 0 1px rgba(180, 35, 24, 0.12);
+                        overflow-wrap: anywhere;
+                    }
+                    @media (hover: hover) {
+                        button:hover { background: #0068e5; box-shadow: 0 10px 28px rgba(0, 112, 240, 0.28); }
+                    }
+                    @media (prefers-reduced-motion: reduce) {
+                        input, select, textarea, button { transition: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <h1>Solicitud de servicio GPS</h1>
+                    <p>Cuéntanos qué necesitas para que nuestro equipo atienda tu solicitud.</p>
+                    <p t-if="error" class="error" role="alert" t-esc="error"/>
+                    <form action="/solicitud-servicio" method="post">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <label for="client_name">Nombre de quien solicita *</label>
+                        <input id="client_name" name="client_name" type="text" required="required" autocomplete="name" t-att-value="values.get('client_name', '')"/>
+                        <label for="phone">Teléfono</label>
+                        <input id="phone" name="phone" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="15" t-att-value="values.get('phone', '')"/>
+                        <label for="email">Correo electrónico</label>
+                        <input id="email" name="email" type="email" t-att-value="values.get('email', '')"/>
+                        <label for="service_type">Tipo de servicio *</label>
+                        <select id="service_type" name="service_type" required="required">
+                            <option value="">Selecciona una opción</option>
+                            <t t-foreach="service_types" t-as="service_type">
+                                <option t-att-value="service_type[0]" t-att-selected="values.get('service_type') == service_type[0]" t-esc="service_type[1]"/>
+                            </t>
+                        </select>
+                        <label for="requested_date">Fecha deseada del servicio</label>
+                        <input id="requested_date" name="requested_date" type="date" t-att-value="values.get('requested_date', '')"/>
+                        <label for="unit_count">Cantidad de unidades</label>
+                        <input id="unit_count" name="unit_count" type="number" min="1" t-att-value="values.get('unit_count', '1')"/>
+                        <label for="location">Ubicación</label>
+                        <input id="location" name="location" type="text" t-att-value="values.get('location', '')"/>
+                        <label for="unit_type">Tipo de unidad/vehículo</label>
+                        <input id="unit_type" name="unit_type" type="text" t-att-value="values.get('unit_type', '')"/>
+                        <label for="plates">Placas</label>
+                        <input id="plates" name="plates" type="text" t-att-value="values.get('plates', '')"/>
+                        <label for="description">¿Qué necesitas?</label>
+                        <textarea id="description" name="description" rows="5" t-esc="values.get('description', '')"/>
+                        <button type="submit">Enviar solicitud</button>
+                    </form>
+                </main>
+                <script>
+                    document.getElementById('phone').addEventListener('input', function () {
+                        this.value = this.value.replace(/[^0-9]/g, '');
+                    });
+                </script>
+            </body>
+        </html>
+    </template>
+    <template id="service_request_thanks" name="Solicitud de servicio recibida">
+        <html lang="es">
+            <head>
+                <meta charset="utf-8"/>
+                <meta name="viewport" content="width=device-width, initial-scale=1"/>
+                <title>Solicitud recibida | Ubitec</title>
+                <style>
+                    * { box-sizing: border-box; }
+                    html { min-height: 100%; color-scheme: light; }
+                    body {
+                        margin: 0;
+                        min-height: 100vh;
+                        min-height: 100svh;
+                        padding: 28px 16px;
+                        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+                        font-size: 16px;
+                        line-height: 1.55;
+                        color: #1d2b42;
+                        background: radial-gradient(ellipse at 0% 0%, #d9eaff 0%, transparent 60%),
+                                    radial-gradient(ellipse at 100% 85%, #e8dff9 0%, transparent 55%),
+                                    linear-gradient(145deg, #f4f8ff, #edf3fa 55%, #f8f5fc);
+                    }
+                    main {
+                        width: 100%;
+                        max-width: 600px;
+                        margin: 0 auto;
+                        padding: 28px 20px;
+                        background: rgba(255, 255, 255, 0.82);
+                        border: 1px solid rgba(255, 255, 255, 0.85);
+                        border-radius: 28px;
+                        box-shadow: 0 20px 65px rgba(46, 73, 120, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+                        -webkit-backdrop-filter: blur(24px) saturate(140%);
+                        backdrop-filter: blur(24px) saturate(140%);
+                    }
+                    h1 {
+                        margin: 0 0 12px;
+                        font-size: clamp(1.65rem, 5vw, 2rem);
+                        font-weight: 700;
+                        line-height: 1.2;
+                        letter-spacing: -0.035em;
+                        overflow-wrap: break-word;
+                    }
+                    p { margin: 0; color: #52627a; }
+                    @media (min-width: 640px) {
+                        body { padding: 56px 24px; }
+                        main { padding: 40px; }
+                    }
+
+                    body { display: grid; align-items: center; }
+                    main { text-align: center; padding-top: 44px; padding-bottom: 44px; }
+                    main::before {
+                        content: "\2713";
+                        display: grid;
+                        place-items: center;
+                        width: 64px;
+                        height: 64px;
+                        margin: 0 auto 24px;
+                        border-radius: 22px;
+                        background: rgba(0, 122, 255, 0.10);
+                        color: #006bea;
+                        font-size: 32px;
+                        font-weight: 600;
+                        box-shadow: inset 0 0 0 1px rgba(0, 122, 255, 0.10);
+                    }
+                </style>
+            </head>
+            <body>
+                <main>
+                    <h1>Gracias por tu solicitud</h1>
+                    <p>Tu solicitud fue recibida, nos pondremos en contacto contigo.</p>
+                </main>
+            </body>
+        </html>
+    </template>
+</odoo>

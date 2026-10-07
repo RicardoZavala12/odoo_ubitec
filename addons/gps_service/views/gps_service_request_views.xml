@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_gps_service_request_list" model="ir.ui.view">
+        <field name="name">gps.service.request.list</field>
+        <field name="model">gps.service.request</field>
+        <field name="arch" type="xml">
+            <list string="Solicitudes de servicio" default_order="create_date desc">
+                <field name="create_date" string="Fecha de recepción"/>
+                <field name="client_name"/>
+                <field name="phone" optional="hide"/>
+                <field name="email" optional="hide"/>
+                <field name="service_type"/>
+                <field name="requested_date"/>
+                <field name="unit_count"/>
+                <field name="location"/>
+                <field name="state" widget="badge" decoration-success="state == 'converted'" decoration-info="state == 'new'"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_gps_service_request_form" model="ir.ui.view">
+        <field name="name">gps.service.request.form</field>
+        <field name="model">gps.service.request</field>
+        <field name="arch" type="xml">
+            <form string="Solicitud de servicio">
+                <header>
+                    <button name="action_convert_to_service" type="object" class="btn-primary" string="Convertir a servicio GPS" invisible="state == 'converted'" groups="gps_service.group_gps_scheduler"/>
+                    <button name="action_view_service" type="object" class="btn-primary" string="Ir a servicio" invisible="state != 'converted'" groups="gps_service.group_gps_scheduler"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="create_date" string="Fecha de recepción" readonly="1"/>
+                        <field name="client_name" readonly="state != 'new'"/>
+                        <field name="phone" readonly="state != 'new'"/>
+                        <field name="email" readonly="state != 'new'"/>
+                        <field name="service_type" readonly="state != 'new'"/>
+                        <field name="requested_date" readonly="state != 'new'"/>
+                        <field name="unit_count" readonly="state != 'new'"/>
+                        <field name="location" readonly="state != 'new'"/>
+                        <field name="unit_type" readonly="state != 'new'"/>
+                        <field name="plates" readonly="state != 'new'"/>
+                        <field name="description" readonly="state != 'new'"/>
+                        <field name="service_id" invisible="state != 'converted'" options="{'no_open': False}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_gps_service_request" model="ir.actions.act_window">
+        <field name="name">Solicitudes de servicio</field>
+        <field name="res_model">gps.service.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+    </record>
+    <menuitem id="menu_gps_service_request" name="Solicitudes de servicio"
+              parent="gps_service.menu_gps_root" action="action_gps_service_request"
+              sequence="20" groups="gps_service.group_gps_scheduler"/>
+</odoo>
