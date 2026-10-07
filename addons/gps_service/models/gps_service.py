@@ -42,7 +42,7 @@ class GpsService(models.Model):
     partner_id = fields.Many2one(
         "res.partner",
         string="Cliente",
-        required=True,
+        # Las solicitudes públicas generan borradores sin un cliente identificado.
         tracking=True,
     )
     unidad_id = fields.Many2one(
@@ -73,6 +73,7 @@ class GpsService(models.Model):
             ("reinstallation", "Reinstalación"),
             ("deinstallation", "Desinstalación"),
             ("review", "Revisión"),
+            ("migration", "Migración"),
         ],
         string="Tipo de servicio",
         required=True,
@@ -330,8 +331,16 @@ class GpsService(models.Model):
     # Botones del flujo (state machine)
     # ==================================================================
     def action_assign(self):
-        """Quien agenda: confirma la asignación al técnico."""
+        """Quien agenda: confirma la asignación al técnico.
+
+        partner_id ya no es obligatorio a nivel de campo (los servicios que
+        nacen de una solicitud pública arrancan sin cliente identificado),
+        pero aqui si se exige: un servicio no puede arrancar su flujo real
+        sin un cliente vinculado.
+        """
         for service in self:
+            if not service.partner_id:
+                raise UserError(_("Asigna un cliente antes de continuar."))
             if not service.technician_id:
                 raise UserError(_("Asigna un técnico antes de continuar."))
             service.state = "assigned"
