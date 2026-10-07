@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- 2026 -->
+    <record id="mandatory_day_2026_01_01" model="hr.leave.mandatory.day">
+        <field name="name">Año Nuevo</field>
+        <field name="start_date">2026-01-01</field>
+        <field name="end_date">2026-01-01</field>
+    </record>
+    <record id="mandatory_day_2026_02_02" model="hr.leave.mandatory.day">
+        <field name="name">Día de la Constitución</field>
+        <field name="start_date">2026-02-02</field>
+        <field name="end_date">2026-02-02</field>
+    </record>
+    <record id="mandatory_day_2026_03_16" model="hr.leave.mandatory.day">
+        <field name="name">Natalicio de Benito Juárez</field>
+        <field name="start_date">2026-03-16</field>
+        <field name="end_date">2026-03-16</field>
+    </record>
+    <record id="mandatory_day_2026_05_01" model="hr.leave.mandatory.day">
+        <field name="name">Día del Trabajo</field>
+        <field name="start_date">2026-05-01</field>
+        <field name="end_date">2026-05-01</field>
+    </record>
+    <record id="mandatory_day_2026_09_16" model="hr.leave.mandatory.day">
+        <field name="name">Día de la Independencia</field>
+        <field name="start_date">2026-09-16</field>
+        <field name="end_date">2026-09-16</field>
+    </record>
+    <record id="mandatory_day_2026_11_16" model="hr.leave.mandatory.day">
+        <field name="name">Día de la Revolución</field>
+        <field name="start_date">2026-11-16</field>
+        <field name="end_date">2026-11-16</field>
+    </record>
+    <record id="mandatory_day_2026_12_25" model="hr.leave.mandatory.day">
+        <field name="name">Navidad</field>
+        <field name="start_date">2026-12-25</field>
+        <field name="end_date">2026-12-25</field>
+    </record>
+    <!-- 2027 -->
+    <record id="mandatory_day_2027_01_01" model="hr.leave.mandatory.day">
+        <field name="name">Año Nuevo</field>
+        <field name="start_date">2027-01-01</field>
+        <field name="end_date">2027-01-01</field>
+    </record>
+    <record id="mandatory_day_2027_02_01" model="hr.leave.mandatory.day">
+        <field name="name">Día de la Constitución</field>
+        <field name="start_date">2027-02-01</field>
+        <field name="end_date">2027-02-01</field>
+    </record>
+    <record id="mandatory_day_2027_03_15" model="hr.leave.mandatory.day">
+        <field name="name">Natalicio de Benito Juárez</field>
+        <field name="start_date">2027-03-15</field>
+        <field name="end_date">2027-03-15</field>
+    </record>
+    <record id="mandatory_day_2027_05_01" model="hr.leave.mandatory.day">
+        <field name="name">Día del Trabajo</field>
+        <field name="start_date">2027-05-01</field>
+        <field name="end_date">2027-05-01</field>
+    </record>
+    <record id="mandatory_day_2027_09_16" model="hr.leave.mandatory.day">
+        <field name="name">Día de la Independencia</field>
+        <field name="start_date">2027-09-16</field>
+        <field name="end_date">2027-09-16</field>
+    </record>
+    <record id="mandatory_day_2027_11_15" model="hr.leave.mandatory.day">
+        <field name="name">Día de la Revolución</field>
+        <field name="start_date">2027-11-15</field>
+        <field name="end_date">2027-11-15</field>
+    </record>
+    <record id="mandatory_day_2027_12_25" model="hr.leave.mandatory.day">
+        <field name="name">Navidad</field>
+        <field name="start_date">2027-12-25</field>
+        <field name="end_date">2027-12-25</field>
+    </record>
+</odoo>

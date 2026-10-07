@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Las asignaciones se crearán manualmente al contar con las fechas reales de ingreso. -->
+    <record id="accrual_plan_vacaciones_lft" model="hr.leave.accrual.plan">
+        <field name="name">Vacaciones LFT México</field>
+        <field name="time_off_type_id" ref="hr_holidays.holiday_status_cl"/>
+    </record>
+    <record id="accrual_level_1" model="hr.leave.accrual.level">
+        <field name="accrual_plan_id" ref="accrual_plan_vacaciones_lft"/>
+        <field name="start_type">day</field>
+        <field name="start_count">0</field>
+        <field name="frequency">yearly</field>
+        <field name="yearly_month">jan</field>
+        <field name="yearly_day">1</field>
+        <field name="added_value">12</field>
+        <field name="added_value_type">day</field>
+        <field name="cap_accrued_time" eval="False"/>
+        <field name="cap_accrued_time_yearly" eval="False"/>
+    </record>
+    <record id="accrual_level_2" model="hr.leave.accrual.level">
+        <field name="accrual_plan_id" ref="accrual_plan_vacaciones_lft"/>
+        <field name="start_type">year</field>
+        <field name="start_count">1</field>
+        <field name="frequency">yearly</field>
+        <field name="yearly_month">jan</field>
+        <field name="yearly_day">1</field>
+        <field name="added_value">14</field>
+        <field name="added_value_type">day</field>
+        <field name="cap_accrued_time" eval="False"/>
+        <field name="cap_accrued_time_yearly" eval="False"/>
+    </record>
+    <record id="accrual_level_3" model="hr.leave.accrual.level">
+        <field name="accrual_plan_id" ref="accrual_plan_vacaciones_lft"/>
+        <field name="start_type">year</field>
+        <field name="start_count">2</field>
+        <field name="frequency">yearly</field>
+        <field name="yearly_month">jan</field>
+        <field name="yearly_day">1</field>
+        <field name="added_value">16</field>
+        <field name="added_value_type">day</field>
+        <field name="cap_accrued_time" eval="False"/>
+        <field name="cap_accrued_time_yearly" eval="False"/>
+    </record>
+    <record id="accrual_level_4" model="hr.leave.accrual.level">
+        <field name="accrual_plan_id" ref="accrual_plan_vacaciones_lft"/>
+        <field name="start_type">year</field>
+        <field name="start_count">3</field>
+        <field name="frequency">yearly</field>
+        <field name="yearly_month">jan</field>
+        <field name="yearly_day">1</field>
+        <field name="added_value">18</field>
+        <field name="added_value_type">day</field>
+        <field name="cap_accrued_time" eval="False"/>
+        <field name="cap_accrued_time_yearly" eval="False"/>
+    </record>
+    <record id="accrual_level_5" model="hr.leave.accrual.level">
+        <field name="accrual_plan_id" ref="accrual_plan_vacaciones_lft"/>
+        <field name="start_type">year</field>
+        <field name="start_count">4</field>
+        <field name="frequency">yearly</field>
+        <field name="yearly_month">jan</field>
+        <field name="yearly_day">1</field>
+        <field name="added_value">20</field>
+        <field name="added_value_type">day</field>
+        <field name="cap_accrued_time" eval="False"/>
+        <field name="cap_accrued_time_yearly" eval="False"/>
+    </record>
+    <record id="accrual_level_6" model="hr.leave.accrual.level">
+        <field name="accrual_plan_id" ref="accrual_plan_vacaciones_lft"/>
+        <field name="start_type">year</field>
+        <field name="start_count">5</field>
+        <field name="frequency">yearly</field>
+        <field name="yearly_month">jan</field>
+        <field name="yearly_day">1</field>
+        <field name="added_value">22</field>
+        <field name="added_value_type">day</field>
+        <field name="cap_accrued_time" eval="False"/>
+        <field name="cap_accrued_time_yearly" eval="False"/>
+    </record>
+</odoo>
