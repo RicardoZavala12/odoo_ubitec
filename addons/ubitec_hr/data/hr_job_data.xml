@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="job_tecnico_instalacion" model="hr.job">
+        <field name="name">Técnico de Instalación GPS</field>
+    </record>
+    <record id="job_soporte_agenda" model="hr.job">
+        <field name="name">Soporte / Agenda</field>
+    </record>
+    <record id="job_ventas_comercial" model="hr.job">
+        <field name="name">Ventas / Comercial</field>
+    </record>
+    <record id="job_administrativo" model="hr.job">
+        <field name="name">Administrativo</field>
+    </record>
+    <record id="job_direccion_gerencia" model="hr.job">
+        <field name="name">Dirección / Gerencia</field>
+    </record>
+</odoo>
